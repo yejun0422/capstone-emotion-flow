@@ -1,0 +1,20 @@
+# 의존성 / 빌드 결과
+node_modules
+dist
+dist-ssr
+*.local
+
+# 로그
+logs
+*.log
+npm-debug.log*
+
+# 편집기 설정 (개인별로 다름)
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+
+# PyCharm이 자동으로 만드는 파이썬 가상환경
+.venv
+__pycache__

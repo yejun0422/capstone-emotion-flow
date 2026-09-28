@@ -1,0 +1,954 @@
+{
+  "sessionId": "demo-001",
+  "fileName": "상담기록_3회기.txt",
+  "speakers": [
+    "상담자",
+    "내담자"
+  ],
+  "emotions": [
+    "불안",
+    "분노",
+    "상처",
+    "슬픔",
+    "당황",
+    "기쁨"
+  ],
+  "utterances": [
+    {
+      "index": 1,
+      "speaker": "내담자",
+      "text": "나는 만화를 그리고 싶은데 부모님은 반대하셔. 이건 내 인생이잖아.",
+      "scores": {
+        "불안": 0.66,
+        "분노": 0.04,
+        "상처": 0.03,
+        "슬픔": 0.42,
+        "당황": 0.4,
+        "기쁨": 0.13
+      },
+      "top": "불안",
+      "topSub": "걱정스러운",
+      "confidence": 0.66
+    },
+    {
+      "index": 2,
+      "speaker": "상담자",
+      "text": "부모님이 반대하셔서 기분이 상하셨군요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 3,
+      "speaker": "내담자",
+      "text": "부모님은 만화가는 불안정한 직업이라고 하시는데 요즘 돈 많이 버는 만화가들도 많아.",
+      "scores": {
+        "불안": 0.38,
+        "분노": 0.0,
+        "상처": 0.03,
+        "슬픔": 0.35,
+        "당황": 0.21,
+        "기쁨": 0.03
+      },
+      "top": "불안",
+      "topSub": "걱정스러운",
+      "confidence": 0.38
+    },
+    {
+      "index": 4,
+      "speaker": "상담자",
+      "text": "지금 상황을 변화시키기 위해 시도해봄 직한 일은 무엇이 있을까요?",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 5,
+      "speaker": "내담자",
+      "text": "내가 노력하겠다고 부모님께 이야기하고 더 열심히 할 거야.",
+      "scores": {
+        "불안": 0.79,
+        "분노": 0.03,
+        "상처": 0.09,
+        "슬픔": 0.44,
+        "당황": 0.2,
+        "기쁨": 0.12
+      },
+      "top": "불안",
+      "topSub": "걱정스러운",
+      "confidence": 0.79
+    },
+    {
+      "index": 6,
+      "speaker": "상담자",
+      "text": "부모님과 대화로 상황이 풀렸으면 좋겠어요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 7,
+      "speaker": "내담자",
+      "text": "원하는 꿈의 기업이 있는데 계속 면접 단계에서 떨어져. 벌써 삼 년째라 너무 슬퍼.",
+      "scores": {
+        "불안": 0.74,
+        "분노": 0.02,
+        "상처": 0.14,
+        "슬픔": 0.3,
+        "당황": 0.23,
+        "기쁨": 0.01
+      },
+      "top": "불안",
+      "topSub": "취약한",
+      "confidence": 0.74
+    },
+    {
+      "index": 8,
+      "speaker": "상담자",
+      "text": "원하는 기업이 있는데 계속 면접 단계에서 떨어지시니 속상하시겠어요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 9,
+      "speaker": "내담자",
+      "text": "취업스터디를 했는데 나만 빼고 다 붙었어. 나만 취업 전략을 모르는 것 같아.",
+      "scores": {
+        "불안": 0.8,
+        "분노": 0.12,
+        "상처": 0.11,
+        "슬픔": 0.36,
+        "당황": 0.49,
+        "기쁨": 0.06
+      },
+      "top": "불안",
+      "topSub": "취약한",
+      "confidence": 0.8
+    },
+    {
+      "index": 10,
+      "speaker": "상담자",
+      "text": "어떻게 하면 면접 때 도움을 받을 수 있을까요?",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 11,
+      "speaker": "내담자",
+      "text": "취업컨설팅을 한 번 받아서 내 문제가 무엇인지 한 번 알아봐야겠어.",
+      "scores": {
+        "불안": 0.86,
+        "분노": 0.09,
+        "상처": 0.13,
+        "슬픔": 0.37,
+        "당황": 0.41,
+        "기쁨": 0.01
+      },
+      "top": "불안",
+      "topSub": "취약한",
+      "confidence": 0.86
+    },
+    {
+      "index": 12,
+      "speaker": "상담자",
+      "text": "취업컨설팅이 면접을 준비하는 것에 도움이 된다면 좋겠어요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 13,
+      "speaker": "내담자",
+      "text": "요즘 회사사정이 어려워 해고를 당하지 않을까 불안하네.",
+      "scores": {
+        "불안": 0.72,
+        "분노": 0.01,
+        "상처": 0.03,
+        "슬픔": 0.23,
+        "당황": 0.28,
+        "기쁨": 0.1
+      },
+      "top": "불안",
+      "topSub": "불안",
+      "confidence": 0.72
+    },
+    {
+      "index": 14,
+      "speaker": "상담자",
+      "text": "해고당할까 봐 걱정이시군요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 15,
+      "speaker": "내담자",
+      "text": "회사가 많이 힘들어서 인원을 정리한다는 말이 있거든.",
+      "scores": {
+        "불안": 0.74,
+        "분노": 0.03,
+        "상처": 0.04,
+        "슬픔": 0.48,
+        "당황": 0.39,
+        "기쁨": 0.09
+      },
+      "top": "불안",
+      "topSub": "불안",
+      "confidence": 0.74
+    },
+    {
+      "index": 16,
+      "speaker": "상담자",
+      "text": "어떻게 하면 불안한 감정을 좀 덜어낼 수 있을까요?",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 17,
+      "speaker": "내담자",
+      "text": "회사에 먼저 대상이 되는지 물어보고 빨리 다른 회사를 알아봐야지.",
+      "scores": {
+        "불안": 0.83,
+        "분노": 0.02,
+        "상처": 0.06,
+        "슬픔": 0.5,
+        "당황": 0.39,
+        "기쁨": 0.08
+      },
+      "top": "불안",
+      "topSub": "불안",
+      "confidence": 0.83
+    },
+    {
+      "index": 18,
+      "speaker": "상담자",
+      "text": "생각하신 대로 잘 처리가 되길 바랄게요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 19,
+      "speaker": "내담자",
+      "text": "동기가 먼저 승진했는데 엄청 좋아하더라.",
+      "scores": {
+        "불안": 0.45,
+        "분노": 0.12,
+        "상처": 0.27,
+        "슬픔": 0.66,
+        "당황": 0.05,
+        "기쁨": 0.04
+      },
+      "top": "슬픔",
+      "topSub": "염세적인",
+      "confidence": 0.66
+    },
+    {
+      "index": 20,
+      "speaker": "상담자",
+      "text": "동기가 승진했는데 기분이 어떠셨어요?",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 21,
+      "speaker": "내담자",
+      "text": "그렇게 일찍 출세하면 항상 빨리 퇴직하는 케이스가 많아서 그렇게 부럽진 않았어.",
+      "scores": {
+        "불안": 0.48,
+        "분노": 0.13,
+        "상처": 0.29,
+        "슬픔": 0.81,
+        "당황": 0.06,
+        "기쁨": 0.14
+      },
+      "top": "슬픔",
+      "topSub": "염세적인",
+      "confidence": 0.81
+    },
+    {
+      "index": 22,
+      "speaker": "상담자",
+      "text": "뻔히 미래가 어떻게 될지 예상하셨군요?",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 23,
+      "speaker": "내담자",
+      "text": "이렇게 말해도 나도 승진하고 싶네.",
+      "scores": {
+        "불안": 0.28,
+        "분노": 0.04,
+        "상처": 0.37,
+        "슬픔": 0.72,
+        "당황": 0.09,
+        "기쁨": 0.13
+      },
+      "top": "슬픔",
+      "topSub": "염세적인",
+      "confidence": 0.72
+    },
+    {
+      "index": 24,
+      "speaker": "상담자",
+      "text": "어떤 행동을 하고 계시는데요?",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 25,
+      "speaker": "내담자",
+      "text": "동생의 행동이 이상해서 정신병원에 가보니까 조현병이래. 동생이 불쌍해.",
+      "scores": {
+        "불안": 0.27,
+        "분노": 0.15,
+        "상처": 0.35,
+        "슬픔": 0.67,
+        "당황": 0.01,
+        "기쁨": 0.02
+      },
+      "top": "슬픔",
+      "topSub": "환멸을 느끼는",
+      "confidence": 0.67
+    },
+    {
+      "index": 26,
+      "speaker": "상담자",
+      "text": "동생이 조현병 결과를 받게 되어 마음이 아프시겠군요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 27,
+      "speaker": "내담자",
+      "text": "그 전부터 몸이 약해서 엄마 아빠 관심을 독차지했는데 이제 난 찬밥이 되려나.",
+      "scores": {
+        "불안": 0.44,
+        "분노": 0.06,
+        "상처": 0.22,
+        "슬픔": 0.75,
+        "당황": 0.15,
+        "기쁨": 0.08
+      },
+      "top": "슬픔",
+      "topSub": "환멸을 느끼는",
+      "confidence": 0.75
+    },
+    {
+      "index": 28,
+      "speaker": "상담자",
+      "text": "이 상황에서는 어떻게 하는 것이 좋을까요?",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 29,
+      "speaker": "내담자",
+      "text": "동생이 나아질 때까지 함께 병원에 다니면서 상황을 지켜봐야 될 것 같아.",
+      "scores": {
+        "불안": 0.46,
+        "분노": 0.0,
+        "상처": 0.42,
+        "슬픔": 0.82,
+        "당황": 0.08,
+        "기쁨": 0.04
+      },
+      "top": "슬픔",
+      "topSub": "환멸을 느끼는",
+      "confidence": 0.82
+    },
+    {
+      "index": 30,
+      "speaker": "상담자",
+      "text": "이 상황이 무사히 잘 지나가기를 바라요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 31,
+      "speaker": "내담자",
+      "text": "취업도 되지 않고 앞으로 무엇을 해야 할지도 모른다는 것이 너무 슬퍼.",
+      "scores": {
+        "불안": 0.23,
+        "분노": 0.07,
+        "상처": 0.34,
+        "슬픔": 0.89,
+        "당황": 0.13,
+        "기쁨": 0.04
+      },
+      "top": "슬픔",
+      "topSub": "비통한",
+      "confidence": 0.89
+    },
+    {
+      "index": 32,
+      "speaker": "상담자",
+      "text": "진로에 대한 고민으로 슬퍼하시군요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 33,
+      "speaker": "내담자",
+      "text": "얼마 전에는 결혼도 해서 가정을 꾸렸는데 일을 못 구하니 점점 불행해지는 것 같아.",
+      "scores": {
+        "불안": 0.25,
+        "분노": 0.14,
+        "상처": 0.46,
+        "슬픔": 0.72,
+        "당황": 0.1,
+        "기쁨": 0.09
+      },
+      "top": "슬픔",
+      "topSub": "비통한",
+      "confidence": 0.72
+    },
+    {
+      "index": 34,
+      "speaker": "상담자",
+      "text": "지금의 슬픈 기분을 나아질 수 있게 할 방법이 있을까요?",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 35,
+      "speaker": "내담자",
+      "text": "취업상담소를 통해서 내가 할 수 있는 일을 알아봐야겠어.",
+      "scores": {
+        "불안": 0.43,
+        "분노": 0.08,
+        "상처": 0.43,
+        "슬픔": 0.78,
+        "당황": 0.0,
+        "기쁨": 0.05
+      },
+      "top": "슬픔",
+      "topSub": "비통한",
+      "confidence": 0.78
+    },
+    {
+      "index": 36,
+      "speaker": "상담자",
+      "text": "취업 상담을 받고 지금의 기분이 나아지셨으면 좋겠어요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 37,
+      "speaker": "내담자",
+      "text": "우리 팀이 전체 실적 일등을 달성해서 너무 기쁘지만 한편으로는 좀 우울해.",
+      "scores": {
+        "불안": 0.14,
+        "분노": 0.46,
+        "상처": 0.47,
+        "슬픔": 0.29,
+        "당황": 0.01,
+        "기쁨": 0.13
+      },
+      "top": "상처",
+      "topSub": "희생된",
+      "confidence": 0.47
+    },
+    {
+      "index": 38,
+      "speaker": "상담자",
+      "text": "어떤 점에서 기쁘지만 우울하다는 복합적인 생각이 드셨나요?",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 39,
+      "speaker": "내담자",
+      "text": "나만 팀에 희생하는 것 같아서 좀 우울해. 이번에도 나만 매일 야근했거든.",
+      "scores": {
+        "불안": 0.01,
+        "분노": 0.35,
+        "상처": 0.67,
+        "슬픔": 0.43,
+        "당황": 0.11,
+        "기쁨": 0.02
+      },
+      "top": "상처",
+      "topSub": "희생된",
+      "confidence": 0.67
+    },
+    {
+      "index": 40,
+      "speaker": "상담자",
+      "text": "팀 실적을 위해 사용자님만 희생하는 것 같아 힘드시군요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 41,
+      "speaker": "내담자",
+      "text": "응 너무 힘들어서 다음 프로젝트에서는 나도 남들이 하는 만큼만 하려고.",
+      "scores": {
+        "불안": 0.08,
+        "분노": 0.28,
+        "상처": 0.87,
+        "슬픔": 0.33,
+        "당황": 0.03,
+        "기쁨": 0.08
+      },
+      "top": "상처",
+      "topSub": "희생된",
+      "confidence": 0.87
+    },
+    {
+      "index": 42,
+      "speaker": "상담자",
+      "text": "프로젝트 부담을 줄이려고 하시는군요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 43,
+      "speaker": "내담자",
+      "text": "팀장님이 오늘 대놓고 나한테 김 과장 보다 못하다고 말했어.",
+      "scores": {
+        "불안": 0.03,
+        "분노": 0.29,
+        "상처": 0.9,
+        "슬픔": 0.39,
+        "당황": 0.07,
+        "기쁨": 0.08
+      },
+      "top": "상처",
+      "topSub": "질투하는",
+      "confidence": 0.9
+    },
+    {
+      "index": 44,
+      "speaker": "상담자",
+      "text": "팀장님 말씀에 상처받으셨을 것 같아요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 45,
+      "speaker": "내담자",
+      "text": "나한테 김 과장보다 나이도 많고 경력도 많은데 일을 못한다고 그러셨어.",
+      "scores": {
+        "불안": 0.03,
+        "분노": 0.3,
+        "상처": 0.42,
+        "슬픔": 0.27,
+        "당황": 0.03,
+        "기쁨": 0.01
+      },
+      "top": "상처",
+      "topSub": "질투하는",
+      "confidence": 0.42
+    },
+    {
+      "index": 46,
+      "speaker": "상담자",
+      "text": "나한테 김 과장보다 나이도 많고 경력도 많은데 일을 못한다 했군요. 이 상황에서 할 수 있는 게 어떤 것이 있을까요?",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 47,
+      "speaker": "내담자",
+      "text": "그냥 참아야지 내가 뭘 어쩌겠어.",
+      "scores": {
+        "불안": 0.03,
+        "분노": 0.47,
+        "상처": 0.86,
+        "슬픔": 0.22,
+        "당황": 0.04,
+        "기쁨": 0.1
+      },
+      "top": "상처",
+      "topSub": "질투하는",
+      "confidence": 0.86
+    },
+    {
+      "index": 48,
+      "speaker": "상담자",
+      "text": "그냥 참는 것 보다 주위에 지금의 감정을 얘기할 수 있는 사람이 있었으면 좋겠어요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 49,
+      "speaker": "내담자",
+      "text": "소심한 성격 때문에 왕따를 당한 적이 있어. 이 트라우마로 인해 정상적인 사회생활이 어려워.",
+      "scores": {
+        "불안": 0.68,
+        "분노": 0.14,
+        "상처": 0.09,
+        "슬픔": 0.34,
+        "당황": 0.44,
+        "기쁨": 0.12
+      },
+      "top": "불안",
+      "topSub": "취약한",
+      "confidence": 0.68
+    },
+    {
+      "index": 50,
+      "speaker": "상담자",
+      "text": "사회생활이 원활하지 않아 힘드시군요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 51,
+      "speaker": "내담자",
+      "text": "이제 취직도 해야 하는데 많은 사람 앞에서 면접을 본다고 생각하면 끔찍해.",
+      "scores": {
+        "불안": 0.67,
+        "분노": 0.06,
+        "상처": 0.06,
+        "슬픔": 0.34,
+        "당황": 0.42,
+        "기쁨": 0.1
+      },
+      "top": "불안",
+      "topSub": "취약한",
+      "confidence": 0.67
+    },
+    {
+      "index": 52,
+      "speaker": "상담자",
+      "text": "과거의 트라우마를 극복하고 사회에 적응하기 위해선 어떻게 해야 할까요?",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 53,
+      "speaker": "내담자",
+      "text": "소모임 등 작은 사회생활부터 시작해서 앞으로 나아가고 싶다가도 겁이 나서 실천을 안 해.",
+      "scores": {
+        "불안": 0.67,
+        "분노": 0.06,
+        "상처": 0.05,
+        "슬픔": 0.46,
+        "당황": 0.27,
+        "기쁨": 0.03
+      },
+      "top": "불안",
+      "topSub": "취약한",
+      "confidence": 0.67
+    },
+    {
+      "index": 54,
+      "speaker": "상담자",
+      "text": "트라우마를 빨리 극복해서 원활한 사회생활을 할 수 있게 되길 바랄게요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 55,
+      "speaker": "내담자",
+      "text": "이 회사에서 내가 정말 잘해 나갈 수 있을지 의문이야. 확신이 서질 않아.",
+      "scores": {
+        "불안": 0.76,
+        "분노": 0.04,
+        "상처": 0.04,
+        "슬픔": 0.48,
+        "당황": 0.33,
+        "기쁨": 0.13
+      },
+      "top": "불안",
+      "topSub": "회의적인",
+      "confidence": 0.76
+    },
+    {
+      "index": 56,
+      "speaker": "상담자",
+      "text": "회사의 일로 고민하시는군요. 어떤 확신이 부족하신가요?",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 57,
+      "speaker": "내담자",
+      "text": "맡은 임무를 잘 해낼 수 있을지. 그 일을 통해 내가 성장할 수 있을지 잘 모르겠어.",
+      "scores": {
+        "불안": 0.66,
+        "분노": 0.15,
+        "상처": 0.13,
+        "슬픔": 0.49,
+        "당황": 0.48,
+        "기쁨": 0.13
+      },
+      "top": "불안",
+      "topSub": "회의적인",
+      "confidence": 0.66
+    },
+    {
+      "index": 58,
+      "speaker": "상담자",
+      "text": "여러 다양한 생각을 하고 계시는군요. 매우 고민되겠어요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 59,
+      "speaker": "내담자",
+      "text": "이번에 대리로 승진을 하게 됐어. 회사에서도 좀 빨리 승진한 경우라고 하더라고.",
+      "scores": {
+        "불안": 0.07,
+        "분노": 0.03,
+        "상처": 0.06,
+        "슬픔": 0.01,
+        "당황": 0.06,
+        "기쁨": 0.9
+      },
+      "top": "기쁨",
+      "topSub": "편안한",
+      "confidence": 0.9
+    },
+    {
+      "index": 60,
+      "speaker": "상담자",
+      "text": "다른 사람들에 비해 빨리 승진해 기분이 좋으시군요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 61,
+      "speaker": "내담자",
+      "text": "응. 동료들이 축하해줘서 기분이 더 좋아.",
+      "scores": {
+        "불안": 0.12,
+        "분노": 0.07,
+        "상처": 0.06,
+        "슬픔": 0.14,
+        "당황": 0.15,
+        "기쁨": 0.79
+      },
+      "top": "기쁨",
+      "topSub": "편안한",
+      "confidence": 0.79
+    },
+    {
+      "index": 62,
+      "speaker": "상담자",
+      "text": "축하해 주는 동료들이 있어 더 기쁘시겠어요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 63,
+      "speaker": "내담자",
+      "text": "새 직장이 아주 마음에 들어! 매일 너무 충실하고 즐겁다.",
+      "scores": {
+        "불안": 0.02,
+        "분노": 0.04,
+        "상처": 0.15,
+        "슬픔": 0.09,
+        "당황": 0.08,
+        "기쁨": 0.84
+      },
+      "top": "기쁨",
+      "topSub": "기쁨",
+      "confidence": 0.84
+    },
+    {
+      "index": 64,
+      "speaker": "상담자",
+      "text": "다행이네요. 만족도가 아주 높은 직장인가 봐요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 65,
+      "speaker": "내담자",
+      "text": "사람들도 다 좋고 일도 정말 재밌고 보람 있어. 빨리 성과도 더 쌓고 싶다.",
+      "scores": {
+        "불안": 0.09,
+        "분노": 0.08,
+        "상처": 0.13,
+        "슬픔": 0.02,
+        "당황": 0.14,
+        "기쁨": 0.32
+      },
+      "top": "기쁨",
+      "topSub": "기쁨",
+      "confidence": 0.32
+    },
+    {
+      "index": 66,
+      "speaker": "상담자",
+      "text": "앞으로 회사에서 어떤 일을 더 하고 싶으세요?",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 67,
+      "speaker": "내담자",
+      "text": "나 혼자 정할 수 있는 게 아니긴 하지만 새 프로젝트의 중역으로 일을 성공적으로 이끌고 싶어!",
+      "scores": {
+        "불안": 0.09,
+        "분노": 0.1,
+        "상처": 0.04,
+        "슬픔": 0.02,
+        "당황": 0.13,
+        "기쁨": 0.71
+      },
+      "top": "기쁨",
+      "topSub": "기쁨",
+      "confidence": 0.71
+    },
+    {
+      "index": 68,
+      "speaker": "상담자",
+      "text": "좋은 목표네요. 늘 당신을 응원할게요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 69,
+      "speaker": "내담자",
+      "text": "이번에 드디어 취업했어. 너무 기분이 좋아!",
+      "scores": {
+        "불안": 0.09,
+        "분노": 0.06,
+        "상처": 0.09,
+        "슬픔": 0.08,
+        "당황": 0.14,
+        "기쁨": 0.7
+      },
+      "top": "기쁨",
+      "topSub": "신이 난",
+      "confidence": 0.7
+    },
+    {
+      "index": 70,
+      "speaker": "상담자",
+      "text": "정말 축하합니다. 원하시던 곳에 취업이 되었나요?",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 71,
+      "speaker": "내담자",
+      "text": "응. 오래 공부했는데 이번에 드디어 붙었네. 엄마가 정말 좋아하네.",
+      "scores": {
+        "불안": 0.04,
+        "분노": 0.06,
+        "상처": 0.1,
+        "슬픔": 0.04,
+        "당황": 0.05,
+        "기쁨": 0.84
+      },
+      "top": "기쁨",
+      "topSub": "신이 난",
+      "confidence": 0.84
+    },
+    {
+      "index": 72,
+      "speaker": "상담자",
+      "text": "부모님도 정말 좋으시겠어요. 요새같이 취업이 어려울 때.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    },
+    {
+      "index": 73,
+      "speaker": "내담자",
+      "text": "응. 잠도 줄여가며 공부한 것이 효과가 있었던 것 같아.",
+      "scores": {
+        "불안": 0.07,
+        "분노": 0.15,
+        "상처": 0.15,
+        "슬픔": 0.01,
+        "당황": 0.03,
+        "기쁨": 0.35
+      },
+      "top": "기쁨",
+      "topSub": "신이 난",
+      "confidence": 0.35
+    },
+    {
+      "index": 74,
+      "speaker": "상담자",
+      "text": "잠도 줄여가며 공부할 정도로 열심히 하셨군요. 대단하세요.",
+      "scores": null,
+      "top": null,
+      "topSub": null,
+      "confidence": null
+    }
+  ],
+  "turningPoints": [
+    19,
+    37,
+    49,
+    59
+  ],
+  "summary": {
+    "dominant": "불안",
+    "volatility": 0.11,
+    "lowConfidenceRatio": 0.14
+  }
+}
