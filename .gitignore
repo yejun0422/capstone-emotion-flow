@@ -78,3 +78,4 @@ logs/
 *.log
 npm-debug.log*
 .ipynb_checkpoints/
+.mcp.json
