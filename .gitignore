@@ -78,4 +78,6 @@ logs/
 *.log
 npm-debug.log*
 .ipynb_checkpoints/
+
+# Claude Code / MCP 로컬 설정
 .mcp.json
