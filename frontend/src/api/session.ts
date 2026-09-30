@@ -1,17 +1,18 @@
 import type { Session } from "../types";
-import dummy from "../data/dummy.json";
+
+const SESSION_ID = "demo-001";
 
 /**
- * 분석 결과를 가져온다.
+ * 분석 결과를 서버에서 가져온다.
  *
- * 지금은 더미 데이터를 그대로 돌려준다.
- * 백엔드가 생기면 이 함수 안만 서버 요청으로 바꾸면 되고,
- * 화면 코드는 건드릴 필요가 없다.
- *
- * 예시 (백엔드 연결 후):
- *   const res = await fetch(`/api/sessions/${id}`);
- *   return res.json();
+ * 개발 중에는 Vite 프록시가 /api 요청을 localhost:8000으로 넘겨준다.
  */
-export async function getSession(): Promise<Session> {
-  return dummy as Session;
+export async function getSession(id: string = SESSION_ID): Promise<Session> {
+  const res = await fetch(`/api/sessions/${id}`);
+
+  if (!res.ok) {
+    throw new Error(`분석 결과를 불러오지 못했습니다 (${res.status})`);
+  }
+
+  return res.json();
 }
