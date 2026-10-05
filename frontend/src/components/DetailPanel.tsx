@@ -1,6 +1,7 @@
 import type { Emotion, Utterance } from "../types";
 import { EMOTION_COLORS, LOW_CONFIDENCE } from "../constants/emotions";
 import EmotionTag from "./EmotionTag";
+import UtteranceText from "./UtteranceText";
 
 interface Props {
   utterance: Utterance | null;
@@ -64,7 +65,7 @@ export default function DetailPanel({ utterance, context, isTurning, onClose, on
                     >
                       <span className="mr-1.5 text-xs tabular-nums">{c.index}</span>
                       <span className="mr-1.5 text-xs">{c.speaker}</span>
-                      {c.text}
+                      <UtteranceText text={c.text} />
                     </button>
                   );
                 })}
@@ -73,7 +74,9 @@ export default function DetailPanel({ utterance, context, isTurning, onClose, on
 
             {utterance.scores === null ? (
               <p className="rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-500">
-                상담자 발화는 감정 분석 대상이 아닙니다.
+                {utterance.speaker === "상담자"
+                  ? "상담자 발화는 감정 분석 대상이 아닙니다."
+                  : "내용이 너무 짧거나 비언어 정보만 있어 감정을 분석하지 않았습니다."}
               </p>
             ) : (
               <>

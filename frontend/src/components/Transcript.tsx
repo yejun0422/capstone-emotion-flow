@@ -1,6 +1,7 @@
 import type { Utterance } from "../types";
 import { LOW_CONFIDENCE } from "../constants/emotions";
 import EmotionTag from "./EmotionTag";
+import UtteranceText from "./UtteranceText";
 
 interface Props {
   utterances: Utterance[];
@@ -37,7 +38,7 @@ export default function Transcript({ utterances, turningPoints, selected, onSele
             >
               <span className="w-7 shrink-0 text-xs tabular-nums text-slate-400">{u.index}</span>
               <span className="w-10 shrink-0 text-xs text-slate-400">{u.speaker}</span>
-              <span className="flex-1 text-sm leading-relaxed text-slate-800">{u.text}</span>
+              <span className="flex-1 text-sm leading-relaxed text-slate-800"><UtteranceText text={u.text} /></span>
 
               {u.top === null || u.confidence === null ? (
                 <span className="shrink-0 rounded-md border border-dashed border-slate-300 px-2 py-0.5 text-[11px] text-slate-400">

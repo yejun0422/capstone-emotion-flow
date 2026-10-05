@@ -35,3 +35,13 @@ export interface Session {
   turningPoints: number[];
   summary: Summary;
 }
+
+export type SessionStatus = "processing" | "done" | "failed";
+
+/** 분석 진행 상태 (화면 2) */
+export interface SessionProgress {
+  sessionId: string;
+  status: SessionStatus;
+  done: number;
+  total: number;
+}
