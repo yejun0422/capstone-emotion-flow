@@ -69,6 +69,7 @@ export default function UploadPage() {
           )}
 
           <div className="mt-6 rounded-lg bg-slate-50 px-4 py-3 text-xs leading-relaxed text-slate-500">
+            한 파일에는 한 회기 분량만 올려 주세요.
             업로드한 파일은 서버에 저장되지 않으며, 분석 후 즉시 폐기됩니다.
             이름·전화번호·이메일 등은 자동으로 가려집니다.
           </div>

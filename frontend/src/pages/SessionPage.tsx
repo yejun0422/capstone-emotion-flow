@@ -30,10 +30,8 @@ export default function SessionPage() {
         if (p.status === "done") {
           setSession(await getSession(id));
         } else if (p.status === "failed") {
-          const s = await getSession(id).catch((e) => {
-            throw e;
-          });
-          setSession(s);
+          // 실패하면 서버가 사유를 오류 응답으로 보낸다 → 아래 catch에서 화면에 표시
+          await getSession(id);
         } else {
           timer = window.setTimeout(poll, POLL_INTERVAL);
         }

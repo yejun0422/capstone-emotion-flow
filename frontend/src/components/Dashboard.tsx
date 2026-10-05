@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import type { Emotion, Session } from "../types";
 import SummaryCards from "./SummaryCards";
 import EmotionBand from "./EmotionBand";
@@ -57,12 +58,13 @@ export default function Dashboard({ data }: Props) {
                 발화 {data.utterances.length} · 화자 {data.speakers.length}
               </span>
             </div>
-            <a
-              href="/"
+            // 변경 후
+            <Link
+              to="/"
               className="rounded-md border border-slate-200 px-3 py-1 text-xs text-slate-500 hover:bg-slate-50"
             >
               새 분석
-            </a>
+            </Link>
           </header>
 
           <main className="space-y-7 p-5">
