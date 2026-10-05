@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import String, Integer, Float, JSON, DateTime, ForeignKey
+from sqlalchemy import String, Integer, Float, JSON, DateTime, ForeignKey, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -33,7 +33,7 @@ class UtteranceRow(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     session_id: Mapped[str] = mapped_column(ForeignKey("sessions.id"))
     idx: Mapped[int] = mapped_column(Integer)
-    speaker: Mapped[str] = mapped_column(String(20))
+    speaker: Mapped[str] = mapped_column(Text)
     text: Mapped[str] = mapped_column(String(2000))
     scores: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     top: Mapped[str | None] = mapped_column(String(10), nullable=True)

@@ -38,6 +38,11 @@ def run(session_id: str, content: bytes, filename: str, counselor: str | None, d
             if is_analyzable(cleaned):
                 targets.append((r["index"], cleaned))
 
+        if not targets:
+            raise parser.ParseError(
+                "분석할 수 있는 내담자 발화가 없습니다. 화자 표기를 확인해 주세요."
+            )
+
         row.total = len(targets)
         db.commit()
 
