@@ -165,7 +165,7 @@ backend/
 | `GET /sessions/{id}/status` | 진행률 (`done` / `total`) | 화면 2 | ✅ |
 | `GET /sessions/{id}` | 분석 결과 전체 | 화면 3·4 | ✅ |
 | `DELETE /sessions/{id}` | 분석 삭제 | 화면 5 | ✅ |
-| `GET /sessions` | 저장된 분석 목록 | 화면 5 | 예정 |
+| `GET /sessions` | 저장된 분석 목록 | 화면 5 | ✅ |
 
 `total`은 전체 발화 수가 아니라 **실제로 분석하는 발화 수**입니다.
 
@@ -235,6 +235,6 @@ DROP TABLE sessions;
 - [x] 마스킹
 - [x] 업로드 · 진행률 · 결과 조회 · 삭제 API, 백그라운드 처리
 - [x] 임시 분석기, 후처리 (대표 감정, 전환점, 요약)
-- [ ] 세션 목록 API
+- [x] 세션 목록 API
 - [ ] 실제 모델 연결
 - [ ] 전환점 알고리즘 튜닝

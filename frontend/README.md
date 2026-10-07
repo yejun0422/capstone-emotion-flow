@@ -34,7 +34,7 @@ npm run dev     # 개발 서버 실행 → http://localhost:5173
 |---|---|---|
 | `/` | `pages/UploadPage.tsx` | 화면 1 — 업로드 |
 | `/sessions/:id` | `pages/SessionPage.tsx` | 분석 중이면 화면 2(진행), 끝나면 화면 3·4(결과) |
-
+| `/sessions` | `pages/SessionListPage.tsx` | 화면 5 — 세션 목록|
 `SessionPage`가 1초마다 진행률을 확인하다가, 분석이 끝나면 결과를 받아 대시보드를 보여줍니다.
 
 ---
