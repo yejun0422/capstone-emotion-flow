@@ -74,11 +74,11 @@ export default function UploadPage() {
             <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
           )}
 
-          <div className="mt-6 rounded-lg bg-slate-50 px-4 py-3 text-xs leading-relaxed text-slate-500">
-            한 파일에는 한 회기 분량만 올려 주세요.
-            업로드한 파일은 서버에 저장되지 않으며, 분석 후 즉시 폐기됩니다.
-            이름·전화번호·이메일 등은 자동으로 가려집니다.
-          </div>
+          <ul className="mt-6 space-y-1 rounded-lg bg-slate-50 py-3 px-4 text-xs leading-relaxed text-slate-500">
+            <li>한 파일에는 한 회기 분량만 올려 주세요.</li>
+            <li>업로드한 파일은 서버에 저장되지 않으며, 분석 후 즉시 폐기됩니다.</li>
+            <li>이름·전화번호·이메일 등은 자동으로 가려집니다.</li>
+          </ul>
         </main>
       </div>
     </div>
