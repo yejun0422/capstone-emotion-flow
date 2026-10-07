@@ -45,3 +45,14 @@ export interface SessionProgress {
   done: number;
   total: number;
 }
+
+/** 저장된 분석 목록의 한 줄 (화면 5) */
+export interface SessionListItem {
+  sessionId: string;
+  fileName: string;
+  status: SessionStatus;
+  createdAt: string;
+  utteranceCount: number;
+  turningCount: number;
+  tops: (Emotion | null)[];   // 내담자 발화별 대표 감정 — 색 띠 축소판용
+}

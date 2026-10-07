@@ -1,4 +1,4 @@
-import type { Session, SessionProgress } from "../types";
+import type { Session, SessionListItem, SessionProgress } from "../types";
 
 /** 파일을 올려 분석을 시작한다. 세션 ID를 즉시 돌려받는다. */
 export async function uploadFile(
@@ -26,6 +26,19 @@ export async function getSession(id: string): Promise<Session> {
   const res = await fetch(`/api/sessions/${id}`);
   if (!res.ok) throw new Error(await readError(res));
   return res.json();
+}
+
+/** 저장된 분석 목록을 최신순으로 가져온다. */
+export async function listSessions(): Promise<SessionListItem[]> {
+  const res = await fetch("/api/sessions");
+  if (!res.ok) throw new Error(await readError(res));
+  return res.json();
+}
+
+/** 분석 결과를 삭제한다. */
+export async function deleteSession(id: string): Promise<void> {
+  const res = await fetch(`/api/sessions/${id}`, { method: "DELETE" });
+  if (!res.ok) throw new Error(await readError(res));
 }
 
 /** 서버가 보낸 에러 메시지를 꺼낸다. */

@@ -58,13 +58,20 @@ export default function Dashboard({ data }: Props) {
                 발화 {data.utterances.length} · 화자 {data.speakers.length}
               </span>
             </div>
-            // 변경 후
-            <Link
-              to="/"
-              className="rounded-md border border-slate-200 px-3 py-1 text-xs text-slate-500 hover:bg-slate-50"
-            >
-              새 분석
-            </Link>
+            <div className="flex gap-2">
+              <Link
+                to="/sessions"
+                className="rounded-md border border-slate-200 px-3 py-1 text-xs text-slate-500 hover:bg-slate-50"
+              >
+                목록
+              </Link>
+              <Link
+                to="/"
+                className="rounded-md border border-slate-200 px-3 py-1 text-xs text-slate-500 hover:bg-slate-50"
+              >
+                새 분석
+              </Link>
+            </div>
           </header>
 
           <main className="space-y-7 p-5">
