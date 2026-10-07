@@ -5,7 +5,6 @@ Emotion = Literal["불안", "분노", "상처", "슬픔", "당황", "기쁨"]
 Speaker = Literal["상담자", "내담자"]
 SessionStatus = Literal["processing", "done", "failed"]
 
-
 class Utterance(BaseModel):
     index: int
     speaker: Speaker
@@ -44,6 +43,7 @@ class SessionListItem(BaseModel):
     """화면 5의 목록용"""
     sessionId: str
     fileName: str
+    status: SessionStatus
     createdAt: str
     utteranceCount: int
     turningCount: int

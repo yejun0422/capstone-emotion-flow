@@ -1,11 +1,12 @@
 import uuid
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, Query, UploadFile
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session as DBSession
 
 from app.db import SessionLocal, get_db
-from app.models import SessionRow
-from app.schemas import Session, SessionStatusResponse, Summary, Utterance
+from app.models import SessionRow, UtteranceRow
+from app.schemas import Session, SessionListItem, SessionStatusResponse, Summary, Utterance
 from app.services.analyzer import EMOTIONS
 from app.services.pipeline import run
 
@@ -52,6 +53,51 @@ def _run_in_background(session_id: str, content: bytes, filename: str, counselor
         run(session_id, content, filename, counselor, db)
     finally:
         db.close()
+
+
+@router.get("", response_model=list[SessionListItem])
+def list_sessions(
+    limit: int = Query(50, ge=1, le=200),
+    db: DBSession = Depends(get_db),
+):
+    """저장된 분석 목록을 최신순으로 돌려준다. (화면 5)"""
+    rows = db.scalars(
+        select(SessionRow).order_by(SessionRow.created_at.desc()).limit(limit)
+    ).all()
+    ids = [r.id for r in rows]
+    if not ids:
+        return []
+
+    # 세션별 발화 수
+    counts = dict(
+        db.execute(
+            select(UtteranceRow.session_id, func.count())
+            .where(UtteranceRow.session_id.in_(ids))
+            .group_by(UtteranceRow.session_id)
+        ).all()
+    )
+
+    # 세션별 내담자 발화의 대표 감정 (색 띠 축소판용)
+    tops: dict[str, list] = {i: [] for i in ids}
+    for session_id, top in db.execute(
+        select(UtteranceRow.session_id, UtteranceRow.top)
+        .where(UtteranceRow.session_id.in_(ids), UtteranceRow.speaker == "내담자")
+        .order_by(UtteranceRow.session_id, UtteranceRow.idx)
+    ):
+        tops[session_id].append(top)
+
+    return [
+        SessionListItem(
+            sessionId=r.id,
+            fileName=r.file_name,
+            status=r.status,
+            createdAt=r.created_at.isoformat(timespec="seconds"),
+            utteranceCount=counts.get(r.id, 0),
+            turningCount=len(r.turning_points or []),
+            tops=tops[r.id],
+        )
+        for r in rows
+    ]
 
 
 @router.get("/{session_id}/status", response_model=SessionStatusResponse)
