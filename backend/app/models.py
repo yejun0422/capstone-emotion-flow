@@ -7,6 +7,24 @@ class Base(DeclarativeBase):
     pass
 
 
+class UserRow(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    username: Mapped[str] = mapped_column(String(30), unique=True)
+    password_hash: Mapped[str] = mapped_column(String(255))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+
+
+class LoginSessionRow(Base):
+    __tablename__ = "login_sessions"
+
+    token_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+
+
 class SessionRow(Base):
     __tablename__ = "sessions"
 
@@ -19,6 +37,7 @@ class SessionRow(Base):
     summary: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     turning_points: Mapped[list | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True, index=True)
 
     utterances: Mapped[list["UtteranceRow"]] = relationship(
         back_populates="session",
@@ -33,8 +52,8 @@ class UtteranceRow(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     session_id: Mapped[str] = mapped_column(ForeignKey("sessions.id"))
     idx: Mapped[int] = mapped_column(Integer)
-    speaker: Mapped[str] = mapped_column(Text)
-    text: Mapped[str] = mapped_column(String(2000))
+    speaker: Mapped[str] = mapped_column(String(50))
+    text: Mapped[str] = mapped_column(Text)
     scores: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     top: Mapped[str | None] = mapped_column(String(10), nullable=True)
     top_sub: Mapped[str | None] = mapped_column(String(20), nullable=True)

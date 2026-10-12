@@ -19,7 +19,15 @@ CREATE DATABASE emotion CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ```
 DATABASE_URL=mysql+pymysql://root:비밀번호@localhost:3306/emotion?charset=utf8mb4
+DEMO_PASSWORD=시연계정비밀번호
+COOKIE_SECURE=false
 ```
+
+| 키 | 뜻 |
+|---|---|
+| `DATABASE_URL` | MySQL 접속 정보 |
+| `DEMO_PASSWORD` | `seed.py`가 만드는 시연 계정 `demo`의 비밀번호 (8자 이상 권장) |
+| `COOKIE_SECURE` | 로그인 쿠키를 HTTPS에서만 보낼지. 로컬 개발은 `false`, **배포할 때 `true`** |
 
 **3. 가상환경과 패키지를 준비합니다.** (윈도우 cmd 기준)
 
@@ -47,7 +55,9 @@ uvicorn app.main:app --reload
 python seed.py
 ```
 
-`frontend/src/data/dummy.json`을 읽어 `demo-001` 세션을 만듭니다.
+시연 계정 `demo`(비밀번호는 `.env`의 `DEMO_PASSWORD`)를 만들고,
+`frontend/src/data/dummy.json`을 읽어 그 계정 소유의 `demo-001` 세션을 만듭니다.
+여러 번 실행해도 결과는 같고, `.env`의 비밀번호를 바꾼 뒤 다시 실행하면 새 비밀번호가 적용됩니다.
 
 ---
 
@@ -58,15 +68,17 @@ backend/
 ├── .env                    접속 정보 (git에 올리지 않음)
 ├── .env.example            .env 작성용 견본
 ├── requirements.txt        의존 패키지 목록
-├── seed.py                 dummy.json → DB (개발용, 한 번만 실행)
+├── seed.py                 시연 계정 + dummy.json → DB (개발용)
 └── app/
     ├── main.py             FastAPI 시작점, CORS, 라우터 등록
     ├── db.py               DB 연결
-    ├── models.py           DB 테이블 정의 (sessions, utterances)
+    ├── models.py           DB 테이블 정의 (users, login_sessions, sessions, utterances)
     ├── schemas.py          API 입출력 모양 (Pydantic) — types.ts와 대응
     ├── routers/
+    │   ├── auth.py         /auth 관련 API (가입, 로그인, 로그아웃, 내 정보)
     │   └── sessions.py     /sessions 관련 API
     └── services/
+        ├── auth.py         비밀번호 해시, 로그인 토큰 발급 · 확인, 현재 사용자 찾기
         ├── parser.py       파일 → 발화 목록
         ├── text_rules.py   비언어 판별·분석용 텍스트 정리 규칙
         ├── masking.py      개인정보 가리기
@@ -159,6 +171,20 @@ backend/
 
 ## API
 
+### 로그인
+
+| 요청 | 하는 일 |
+|---|---|
+| `POST /auth/signup` | 회원가입. 성공하면 바로 로그인 상태가 됨 |
+| `POST /auth/login` | 로그인. 성공하면 쿠키를 내려줌 |
+| `POST /auth/logout` | 로그아웃. 서버 기록과 쿠키를 함께 지움 |
+| `GET /auth/me` | 지금 로그인한 사용자. 로그인 안 돼 있으면 401 |
+
+### 분석
+
+아래 API는 모두 **로그인이 필요**하고(없으면 401), **본인 세션만** 다룹니다.
+남의 세션 ID로 요청하면 없는 세션과 똑같이 404를 돌려줍니다.
+
 | 요청 | 하는 일 | 쓰는 화면 | 상태 |
 |---|---|---|---|
 | `POST /sessions` | 파일 업로드, 분석 시작. 세션 ID를 즉시 돌려줌 | 화면 1 | ✅ |
@@ -168,6 +194,25 @@ backend/
 | `GET /sessions` | 저장된 분석 목록 | 화면 5 | ✅ |
 
 `total`은 전체 발화 수가 아니라 **실제로 분석하는 발화 수**입니다.
+
+---
+
+## 로그인 · 보안
+
+**흐름** — 로그인에 성공하면 무작위 토큰을 만들어 `login_sessions`에 적고, 브라우저에는 쿠키로 내려줍니다.
+이후 요청마다 쿠키의 토큰을 장부에서 찾아 사용자를 확인합니다(`services/auth.py`의 `get_current_user`).
+로그아웃하면 장부에서 지우므로 그 토큰은 즉시 쓸 수 없게 됩니다.
+
+| 항목 | 내용 |
+|---|---|
+| 가입 규칙 | 아이디 영문·숫자·밑줄 3~30자, 비밀번호 8자 이상 128자 이하 |
+| 아이디 대소문자 | 구분하지 않음 (DB가 `utf8mb4_unicode_ci`). `Yejun`과 `yejun`은 같은 아이디 |
+| 비밀번호 저장 | Argon2 해시 (`pwdlib`) |
+| 토큰 저장 | 쿠키에는 원래 토큰, DB에는 SHA-256 해시만 저장 |
+| 쿠키 | 이름 `sid`, 유효기간 7일, `HttpOnly` · `SameSite=Lax`, 배포 시 `Secure` (`COOKIE_SECURE=true`) |
+| 로그인 실패 문구 | 아이디가 없을 때와 비밀번호가 틀렸을 때 같은 문구, 같은 응답 시간 — 가입된 아이디를 알아낼 수 없게 |
+
+가입 규칙을 바꾸려면 `schemas.py`의 `SignupRequest`와 프론트의 `src/pages/LoginPage.tsx`(`validate()`)를 같이 고쳐 주세요.
 
 ---
 
@@ -214,8 +259,13 @@ USE emotion;
 SET SQL_SAFE_UPDATES = 0;
 DELETE FROM utterances;
 DELETE FROM sessions;
+DELETE FROM login_sessions;
+DELETE FROM users;
 SET SQL_SAFE_UPDATES = 1;
 ```
+
+계정까지 지워지므로 비운 뒤에는 `python seed.py`로 시연 계정과 데모 세션을 다시 넣습니다.
+분석 기록만 지우고 계정은 남기려면 위에서 `DELETE FROM sessions;`까지만 실행하세요.
 
 **테이블 구조가 바뀌었을 때** — `create_all`은 이미 있는 테이블에 칸을 추가하지 않습니다.
 개발 중에는 테이블을 지우고 서버를 다시 켜는 게 가장 간단합니다.
@@ -223,7 +273,11 @@ SET SQL_SAFE_UPDATES = 1;
 ```sql
 DROP TABLE utterances;
 DROP TABLE sessions;
+DROP TABLE login_sessions;
+DROP TABLE users;
 ```
+
+다른 테이블이 참조하는 쪽을 나중에 지워야 해서 순서가 중요합니다. (발화 → 세션 → 로그인 기록 → 사용자)
 
 ---
 
@@ -236,5 +290,6 @@ DROP TABLE sessions;
 - [x] 업로드 · 진행률 · 결과 조회 · 삭제 API, 백그라운드 처리
 - [x] 임시 분석기, 후처리 (대표 감정, 전환점, 요약)
 - [x] 세션 목록 API
+- [x] 로그인 · 사용자별 세션 분리 (가입 · 로그인 · 로그아웃, 소유자 확인, 시연 계정)
 - [ ] 실제 모델 연결
 - [ ] 전환점 알고리즘 튜닝

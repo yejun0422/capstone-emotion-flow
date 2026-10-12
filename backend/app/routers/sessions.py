@@ -5,14 +5,24 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session as DBSession
 
 from app.db import SessionLocal, get_db
-from app.models import SessionRow, UtteranceRow
+from app.models import SessionRow, UserRow, UtteranceRow
 from app.schemas import Session, SessionListItem, SessionStatusResponse, Summary, Utterance
 from app.services.analyzer import EMOTIONS
+from app.services.auth import get_current_user
 from app.services.pipeline import run
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
 
 MAX_SIZE = 5 * 1024 * 1024   # 5MB
+NOT_FOUND = "분석 결과를 찾을 수 없습니다."
+
+
+def _get_own_session(db: DBSession, session_id: str, user: UserRow) -> SessionRow:
+    """내 세션만 돌려준다. 없거나 남의 것이면 똑같이 404."""
+    row = db.get(SessionRow, session_id)
+    if row is None or row.user_id != user.id:
+        raise HTTPException(status_code=404, detail=NOT_FOUND)
+    return row
 
 
 @router.post("", response_model=SessionStatusResponse, status_code=202)
@@ -21,6 +31,7 @@ async def create_session(
     file: UploadFile = File(...),
     counselor: str | None = Form(None),
     db: DBSession = Depends(get_db),
+    user: UserRow = Depends(get_current_user),
 ):
     """파일을 받아 분석을 시작한다. 즉시 세션 ID를 돌려준다. (화면 1)"""
     content = await file.read()
@@ -35,6 +46,7 @@ async def create_session(
             id=session_id,
             file_name=file.filename or "unknown.txt",
             status="processing",
+            user_id=user.id,
         )
     )
     db.commit()
@@ -59,10 +71,14 @@ def _run_in_background(session_id: str, content: bytes, filename: str, counselor
 def list_sessions(
     limit: int = Query(50, ge=1, le=200),
     db: DBSession = Depends(get_db),
+    user: UserRow = Depends(get_current_user),
 ):
     """저장된 분석 목록을 최신순으로 돌려준다. (화면 5)"""
     rows = db.scalars(
-        select(SessionRow).order_by(SessionRow.created_at.desc()).limit(limit)
+        select(SessionRow)
+        .where(SessionRow.user_id == user.id)
+        .order_by(SessionRow.created_at.desc())
+        .limit(limit)
     ).all()
     ids = [r.id for r in rows]
     if not ids:
@@ -101,11 +117,13 @@ def list_sessions(
 
 
 @router.get("/{session_id}/status", response_model=SessionStatusResponse)
-def get_status(session_id: str, db: DBSession = Depends(get_db)):
+def get_status(
+    session_id: str,
+    db: DBSession = Depends(get_db),
+    user: UserRow = Depends(get_current_user),
+):
     """분석 진행률을 돌려준다. (화면 2)"""
-    row = db.get(SessionRow, session_id)
-    if row is None:
-        raise HTTPException(status_code=404, detail="분석 결과를 찾을 수 없습니다.")
+    row = _get_own_session(db, session_id, user)
 
     return SessionStatusResponse(
         sessionId=row.id, status=row.status, done=row.done, total=row.total
@@ -113,11 +131,13 @@ def get_status(session_id: str, db: DBSession = Depends(get_db)):
 
 
 @router.get("/{session_id}", response_model=Session)
-def get_session(session_id: str, db: DBSession = Depends(get_db)):
+def get_session(
+    session_id: str,
+    db: DBSession = Depends(get_db),
+    user: UserRow = Depends(get_current_user),
+):
     """분석 결과 전체를 돌려준다. (화면 3·4)"""
-    row = db.get(SessionRow, session_id)
-    if row is None:
-        raise HTTPException(status_code=404, detail="분석 결과를 찾을 수 없습니다.")
+    row = _get_own_session(db, session_id, user)
     if row.status == "failed":
         raise HTTPException(status_code=422, detail=row.error or "분석에 실패했습니다.")
     if row.status != "done":
@@ -146,10 +166,12 @@ def get_session(session_id: str, db: DBSession = Depends(get_db)):
 
 
 @router.delete("/{session_id}", status_code=204)
-def delete_session(session_id: str, db: DBSession = Depends(get_db)):
+def delete_session(
+    session_id: str,
+    db: DBSession = Depends(get_db),
+    user: UserRow = Depends(get_current_user),
+):
     """분석을 삭제한다. (화면 5)"""
-    row = db.get(SessionRow, session_id)
-    if row is None:
-        raise HTTPException(status_code=404, detail="분석 결과를 찾을 수 없습니다.")
+    row = _get_own_session(db, session_id, user)
     db.delete(row)
     db.commit()
