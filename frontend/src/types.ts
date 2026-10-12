@@ -56,3 +56,9 @@ export interface SessionListItem {
   turningCount: number;
   tops: (Emotion | null)[];   // 내담자 발화별 대표 감정 — 색 띠 축소판용
 }
+
+/** 로그인한 사용자 */
+export interface User {
+  id: number;
+  username: string;
+}

@@ -17,6 +17,8 @@ npm install     # 처음 한 번만
 npm run dev     # 개발 서버 실행 → http://localhost:5173
 ```
 
+처음 들어가면 로그인 화면이 나옵니다. 회원가입하거나 시연 계정 `demo`로 로그인하세요.
+
 개발 중에는 Vite가 `/api`로 시작하는 요청을 `http://localhost:8000`(백엔드)으로 넘겨줍니다.
 설정은 `vite.config.ts`의 `server.proxy`에 있습니다.
 
@@ -32,9 +34,14 @@ npm run dev     # 개발 서버 실행 → http://localhost:5173
 
 | 주소 | 파일 | 화면 |
 |---|---|---|
+| `/login` | `pages/LoginPage.tsx` | 로그인 · 회원가입 (한 화면에서 전환) |
 | `/` | `pages/UploadPage.tsx` | 화면 1 — 업로드 |
 | `/sessions/:id` | `pages/SessionPage.tsx` | 분석 중이면 화면 2(진행), 끝나면 화면 3·4(결과) |
-| `/sessions` | `pages/SessionListPage.tsx` | 화면 5 — 세션 목록|
+| `/sessions` | `pages/SessionListPage.tsx` | 화면 5 — 세션 목록 |
+
+`/login`을 뺀 나머지 주소는 **로그인해야 볼 수 있습니다.** 로그인 안 했으면 로그인 화면으로 보내고,
+로그인하면 원래 가려던 주소로 돌아옵니다.
+
 `SessionPage`가 1초마다 진행률을 확인하다가, 분석이 끝나면 결과를 받아 대시보드를 보여줍니다.
 
 ---
@@ -49,11 +56,19 @@ src/
 ├── types.ts                데이터 모양 정의 — backend/app/schemas.py와 대응
 │
 ├── pages/
+│   ├── LoginPage.tsx       로그인 · 회원가입
 │   ├── UploadPage.tsx      화면 1: 파일 업로드
-│   └── SessionPage.tsx     화면 2·3: 진행률 확인 → 결과 표시
+│   ├── SessionPage.tsx     화면 2·3: 진행률 확인 → 결과 표시
+│   └── SessionListPage.tsx 화면 5: 세션 목록
 │
 ├── api/
-│   └── session.ts          서버 요청 (업로드, 진행률, 결과 조회)
+│   ├── session.ts          서버 요청 (업로드, 진행률, 결과 조회, 목록, 삭제)
+│   └── auth.ts             서버 요청 (가입, 로그인, 로그아웃, 내 정보)
+│
+├── auth/
+│   ├── AuthContext.ts      로그인 정보를 모든 화면에서 꺼내 쓰는 통로 (useAuth)
+│   ├── AuthProvider.tsx    앱을 처음 열 때 로그인 여부를 한 번 확인
+│   └── RequireAuth.tsx     로그인 안 했으면 로그인 화면으로 보내는 문지기
 │
 ├── constants/
 │   ├── emotions.ts         감정 색상, 신뢰도 기준값
@@ -71,7 +86,8 @@ src/
     ├── Transcript.tsx      전사본 목록
     ├── DetailPanel.tsx     화면 4: 발화 상세 패널
     ├── UtteranceText.tsx   발화 원문 표시 (괄호류는 회색 처리)
-    └── EmotionTag.tsx      감정 색 알약 태그 (공용)
+    ├── EmotionTag.tsx      감정 색 알약 태그 (공용)
+    └── UserMenu.tsx        헤더의 아이디 · 로그아웃 버튼 (업로드 · 목록 화면)
 ```
 
 ---
@@ -88,6 +104,17 @@ src/
 | 전사본 발화 클릭 | 상세 패널 열림 (한 번 더 누르면 닫힘) |
 | 감정 버튼 클릭 | 해당 감정 곡선 표시 · 숨김 |
 | Esc | 상세 패널 닫기 |
+
+---
+
+## 로그인 처리
+
+- 로그인 상태는 서버가 내려준 **httpOnly 쿠키**로 유지됩니다. 프론트 코드는 쿠키를 읽지도, 직접 붙이지도 않습니다.
+  Vite 프록시 덕분에 프론트와 백엔드가 같은 주소로 보여서 브라우저가 알아서 붙여 보냅니다.
+- `AuthProvider`가 앱을 처음 열 때 `/auth/me`로 한 번 확인하고, 화면에서는 `useAuth()`로 꺼내 씁니다.
+- 쓰는 도중에 로그인이 풀리면(7일 만료 등) `api/session.ts`의 `check()`가 401을 보고 로그인 화면으로 보냅니다.
+- 가입 규칙(아이디 영문·숫자·밑줄 3~30자, 비밀번호 8자 이상)은 서버로 보내기 전에 `LoginPage.tsx`에서도 검사해
+  바로 한국어로 알려줍니다. 실제로 막는 것은 서버 쪽 검사입니다.
 
 ---
 
@@ -108,6 +135,7 @@ src/
 |---|---|---|
 | `src/types.ts` | `app/schemas.py` | 데이터 모양 |
 | `src/constants/nonverbal.ts` | `app/services/text_rules.py` | 비언어 판별 규칙 |
+| `src/pages/LoginPage.tsx`의 `validate()` | `app/schemas.py`의 `SignupRequest` | 가입 규칙 |
 
 한쪽만 고치면 화면과 분석이 어긋납니다. 고친 뒤에는 팀에 공유해 주세요.
 

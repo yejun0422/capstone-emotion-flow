@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { uploadFile } from "../api/session";
+import UserMenu from "../components/UserMenu";
 
 export default function UploadPage() {
   const navigate = useNavigate();
@@ -25,12 +26,15 @@ export default function UploadPage() {
       <div className="mx-auto max-w-2xl overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         <header className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
           <h1 className="text-sm font-semibold text-slate-900">감정 흐름 분석</h1>
-          <Link
-            to="/sessions"
-            className="rounded-md border border-slate-200 px-3 py-1 text-xs text-slate-500 hover:bg-slate-50"
-          >
-            세션 목록
-          </Link>
+          <div className="flex items-center gap-3">
+            <UserMenu />
+            <Link
+              to="/sessions"
+              className="rounded-md border border-slate-200 px-3 py-1 text-xs text-slate-500 hover:bg-slate-50"
+            >
+              세션 목록
+            </Link>
+          </div>
         </header>
 
         <main className="p-5">

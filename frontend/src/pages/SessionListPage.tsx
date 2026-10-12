@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import type { Emotion, SessionListItem } from "../types";
 import { deleteSession, listSessions } from "../api/session";
 import { EMOTION_COLORS, GRAY } from "../constants/emotions";
+import UserMenu from "../components/UserMenu";
 
 const STATUS_LABEL = {
   processing: { text: "분석 중", className: "bg-slate-100 text-slate-500" },
@@ -40,12 +41,15 @@ export default function SessionListPage() {
             <h1 className="text-sm font-semibold text-slate-900">세션 목록</h1>
             {items && <span className="text-xs text-slate-400">{items.length}건</span>}
           </div>
-          <Link
-            to="/"
-            className="rounded-md border border-slate-200 px-3 py-1 text-xs text-slate-500 hover:bg-slate-50"
-          >
-            새 분석
-          </Link>
+          <div className="flex items-center gap-3">
+            <UserMenu />
+            <Link
+              to="/"
+              className="rounded-md border border-slate-200 px-3 py-1 text-xs text-slate-500 hover:bg-slate-50"
+            >
+              새 분석
+            </Link>
+          </div>
         </header>
 
         <main className="p-5">

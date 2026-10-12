@@ -10,43 +10,52 @@ export async function uploadFile(
   if (counselor) form.append("counselor", counselor);
 
   const res = await fetch("/api/sessions", { method: "POST", body: form });
-  if (!res.ok) throw new Error(await readError(res));
+  await check(res);
   return res.json();
 }
 
 /** 분석 진행률을 확인한다. */
 export async function getProgress(id: string): Promise<SessionProgress> {
   const res = await fetch(`/api/sessions/${id}/status`);
-  if (!res.ok) throw new Error(await readError(res));
+  await check(res);
   return res.json();
 }
 
 /** 분석 결과 전체를 가져온다. */
 export async function getSession(id: string): Promise<Session> {
   const res = await fetch(`/api/sessions/${id}`);
-  if (!res.ok) throw new Error(await readError(res));
+  await check(res);
   return res.json();
 }
 
 /** 저장된 분석 목록을 최신순으로 가져온다. */
 export async function listSessions(): Promise<SessionListItem[]> {
   const res = await fetch("/api/sessions");
-  if (!res.ok) throw new Error(await readError(res));
+  await check(res);
   return res.json();
 }
 
 /** 분석 결과를 삭제한다. */
 export async function deleteSession(id: string): Promise<void> {
   const res = await fetch(`/api/sessions/${id}`, { method: "DELETE" });
-  if (!res.ok) throw new Error(await readError(res));
+  await check(res);
+}
+
+/** 실패한 응답이면 에러를 던진다. 로그인이 풀렸으면(401) 로그인 화면으로 보낸다. */
+async function check(res: Response): Promise<void> {
+  if (res.ok) return;
+  if (res.status === 401) window.location.assign("/login");
+  throw new Error(await readError(res));
 }
 
 /** 서버가 보낸 에러 메시지를 꺼낸다. */
-async function readError(res: Response): Promise<string> {
+export async function readError(res: Response): Promise<string> {
   try {
     const body = await res.json();
-    return body.detail ?? `요청에 실패했습니다 (${res.status})`;
+    if (typeof body.detail === "string") return body.detail;
+    if (Array.isArray(body.detail)) return "입력 형식이 올바르지 않습니다.";
   } catch {
-    return `요청에 실패했습니다 (${res.status})`;
+    // 본문이 JSON이 아니면 아래 기본 문구
   }
+  return `요청에 실패했습니다 (${res.status})`;
 }
