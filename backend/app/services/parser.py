@@ -53,6 +53,10 @@ ROLE_ALIASES = {
     "내": "내담자", "C": "내담자", "c": "내담자",
 }
 
+# CSV 머리글로 인식하는 이름 (영문은 대소문자 구분 없음)
+SPEAKER_COLUMNS = ["화자", "발화자", "구분", "이름", "speaker", "name"]
+TEXT_COLUMNS = ["발화", "내용", "대화", "발언", "대사", "text", "message", "utterance"]
+
 
 def normalize_speaker(name: str) -> str:
     """화자 표기를 정리한다. 번호를 떼고 역할 이름을 통일한다."""
@@ -101,17 +105,24 @@ def _parse_csv(text: str) -> list[dict]:
     if not reader.fieldnames:
         raise ParseError("CSV에 머리글이 없습니다.")
 
-    speaker_col = _find_column(reader.fieldnames, ["화자", "speaker", "이름"])
-    text_col = _find_column(reader.fieldnames, ["발화", "내용", "text", "message"])
+    speaker_col = _find_column(reader.fieldnames, SPEAKER_COLUMNS)
+    text_col = _find_column(reader.fieldnames, TEXT_COLUMNS)
     if not speaker_col or not text_col:
-        raise ParseError("CSV에 화자/발화 열을 찾지 못했습니다.")
+        raise ParseError(
+            "CSV에서 화자 열과 발화 열을 찾지 못했습니다. 첫 줄 머리글을 '화자', '발화'로 맞춰 주세요."
+        )
 
     rows = []
     for row in reader:
         speaker = (row.get(speaker_col) or "").strip()
         content = (row.get(text_col) or "").strip()
-        if speaker and content:
+        if not content:
+            continue
+        if speaker:
             rows.append({"speaker": normalize_speaker(speaker), "text": content})
+        else:
+            # 화자 칸이 비어 있으면 앞 발화가 이어지는 내용으로 본다 (txt와 같은 규칙)
+            _append_to_last(rows, content)
     return rows
 
 
