@@ -1,0 +1,8 @@
+{
+    "major_accuracy": 0.7709682276765547,
+    "major_macro_f1": 0.7654021941894253,
+    "major_weighted_f1": 0.7714568731394078,
+    "minor_accuracy": 0.5164884806505045,
+    "minor_macro_f1": 0.505294722563496,
+    "minor_weighted_f1": 0.517320326259792
+}
