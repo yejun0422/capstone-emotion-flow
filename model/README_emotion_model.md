@@ -92,8 +92,8 @@ def analyze(texts: list[str]) -> list[dict[str, float]]:
 ```
 사용 예시
 ``` python
-text = ["오늘 발표를 망쳐서 정말 속상했어요.",
-        "친구가 도와줘서 마음이 한결 편해졌어요.",]
+text = ["오늘은 정말 기분이 좋다.",
+        "오늘 발표를 망쳐서 정말 속상했어요."]
 analyze(text)
 ```
 실행 결과
