@@ -125,7 +125,7 @@ export default function DetailPanel({ utterance, context, isTurning, onClose, on
                 {/* 안내 */}
                 {isTurning && (
                   <div className="rounded-lg bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900">
-                    이 발화는 전환점으로 탐지되었습니다. 직전 구간과 대표 감정이 달라집니다.
+                    이 발화는 전환점으로 탐지되었습니다. 앞뒤 구간의 감정 분포가 크게 달라집니다.
                   </div>
                 )}
                 {weak && (

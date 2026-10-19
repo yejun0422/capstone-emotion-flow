@@ -13,42 +13,45 @@ def pick_top(scores: dict[str, float] | None) -> tuple[str | None, float | None]
     return top, scores[top]
 
 
-def find_turning_points(utterances: list[dict], window: int = 3) -> list[int]:
+def find_turning_points(utterances: list[dict], window: int = 3, threshold: float = 0.4) -> list[int]:
     """감정 흐름이 크게 바뀌는 지점의 발화 번호를 찾는다.
 
-    어떤 발화를 기준으로 앞쪽 window개의 평균 감정과
-    뒤쪽 window개의 평균 감정을 비교해, 대표 감정이 달라지면 전환점으로 본다.
+    분석된 내담자 발화를 순서대로 보며, 어떤 발화를 기준으로
+    앞쪽 window개와 뒤쪽 window개의 평균 감정 분포가 얼마나 다른지(0~1) 계산한다.
+    그 차이가 threshold 이상이면서 이웃보다 큰 곳(봉우리)을 전환점으로 본다.
     """
     targets = [u for u in utterances if u["scores"]]
     if len(targets) < window * 2:
         return []
 
-    points = []
-    for i in range(window, len(targets) - window):
-        before = _mean_top(targets[i - window : i])
-        after = _mean_top(targets[i : i + window])
-        if before != after:
-            points.append(targets[i]["index"])
+    # 기준 발화 i: 앞쪽 [i-window, i), 뒤쪽 [i, i+window)
+    diffs: dict[int, float] = {}
+    for i in range(window, len(targets) - window + 1):
+        before = _mean_scores(targets[i - window : i])
+        after = _mean_scores(targets[i : i + window])
+        diffs[i] = 0.5 * sum(abs(before[e] - after[e]) for e in EMOTIONS)
 
-    return _merge_close(points, min_gap=window * 2)
+    # 봉우리: 기준 이상이고, 왼쪽 이웃보다 크고, 오른쪽 이웃보다 작지 않은 곳
+    peaks = [
+        i for i, d in diffs.items()
+        if d >= threshold and d > diffs.get(i - 1, -1.0) and d >= diffs.get(i + 1, -1.0)
+    ]
+
+    # window보다 가까이 붙은 봉우리는 더 높은 쪽 하나만 남긴다
+    chosen: list[int] = []
+    for i in peaks:
+        if chosen and i - chosen[-1] < window:
+            if diffs[i] > diffs[chosen[-1]]:
+                chosen[-1] = i
+            continue
+        chosen.append(i)
+
+    return [targets[i]["index"] for i in chosen]
 
 
-def _mean_top(items: list[dict]) -> str:
-    """구간의 평균 감정 중 가장 강한 것."""
-    total = {e: 0.0 for e in EMOTIONS}
-    for item in items:
-        for emotion, score in item["scores"].items():
-            total[emotion] += score
-    return max(total, key=total.get)
-
-
-def _merge_close(points: list[int], min_gap: int) -> list[int]:
-    """가까이 붙은 전환점은 첫 번째만 남긴다."""
-    merged = []
-    for p in points:
-        if not merged or p - merged[-1] >= min_gap:
-            merged.append(p)
-    return merged
+def _mean_scores(items: list[dict]) -> dict[str, float]:
+    """구간의 감정별 평균 점수."""
+    return {e: sum(it["scores"][e] for it in items) / len(items) for e in EMOTIONS}
 
 
 def summarize(utterances: list[dict]) -> dict:
