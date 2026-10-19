@@ -81,3 +81,6 @@ npm-debug.log*
 
 # Claude Code / MCP 로컬 설정
 .mcp.json
+
+# 검증 예측 결과 — AI Hub 원문이 들어 있어 올리지 않음 (요약은 *_summary.json)
+model/result/*predictions*.csv
