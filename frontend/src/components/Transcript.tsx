@@ -1,5 +1,5 @@
-import type { Utterance } from "../types";
-import { LOW_CONFIDENCE } from "../constants/emotions";
+import type { Emotion, Utterance } from "../types";
+import { LOW_CONFIDENCE, toPercent } from "../constants/emotions";
 import EmotionTag from "./EmotionTag";
 import UtteranceText from "./UtteranceText";
 
@@ -24,7 +24,11 @@ export default function Transcript({ utterances, turningPoints, selected, onSele
         {utterances.map((u) => {
           const isSelected = selected === u.index;
           const isTurning = turningSet.has(u.index);
-          const weak = u.confidence !== null && u.confidence < LOW_CONFIDENCE;
+          // 1등 점수가 기준보다 낮으면 "복합": 1·2등을 함께 보여 준다
+          const second =
+            u.scores && u.confidence !== null && u.confidence < LOW_CONFIDENCE
+              ? (Object.entries(u.scores) as [Emotion, number][]).sort((a, b) => b[1] - a[1])[1]
+              : null;
 
           return (
             <div
@@ -34,7 +38,6 @@ export default function Transcript({ utterances, turningPoints, selected, onSele
               className={`flex cursor-pointer items-baseline gap-3 border-l-2 px-3 py-2.5 transition-colors ${
                 isTurning ? "border-l-amber-500" : "border-l-transparent"
               } ${isSelected ? "bg-amber-50" : "hover:bg-slate-50"}`}
-              style={{ opacity: weak ? 0.5 : 1 }}
             >
               <span className="w-7 shrink-0 text-xs tabular-nums text-slate-400">{u.index}</span>
               <span className="w-10 shrink-0 text-xs text-slate-400">{u.speaker}</span>
@@ -44,9 +47,19 @@ export default function Transcript({ utterances, turningPoints, selected, onSele
                 <span className="shrink-0 rounded-md border border-dashed border-slate-300 px-2 py-0.5 text-[11px] text-slate-400">
                   판단 보류
                 </span>
+              ) : second ? (
+                <span className="flex shrink-0 items-center gap-1">
+                  <span className="text-[11px] text-slate-400">복합</span>
+                  <EmotionTag emotion={u.top}>
+                    {u.top} {toPercent(u.confidence)}
+                  </EmotionTag>
+                  <EmotionTag emotion={second[0]}>
+                    {second[0]} {toPercent(second[1])}
+                  </EmotionTag>
+                </span>
               ) : (
                 <EmotionTag emotion={u.top}>
-                  {u.top} {u.confidence.toFixed(2)}
+                  {u.top} {toPercent(u.confidence)}
                 </EmotionTag>
               )}
             </div>

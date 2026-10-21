@@ -1,5 +1,5 @@
 import type { Emotion, Utterance } from "../types";
-import { EMOTION_COLORS, LOW_CONFIDENCE } from "../constants/emotions";
+import { EMOTION_COLORS, LOW_CONFIDENCE, toPercent } from "../constants/emotions";
 import EmotionTag from "./EmotionTag";
 import UtteranceText from "./UtteranceText";
 
@@ -20,7 +20,7 @@ export default function DetailPanel({ utterance, context, isTurning, onClose, on
     ? (Object.entries(utterance.scores) as [Emotion, number][]).sort((a, b) => b[1] - a[1])
     : [];
 
-  const weak = utterance?.confidence != null && utterance.confidence < LOW_CONFIDENCE;
+  const mixed = utterance?.confidence != null && utterance.confidence < LOW_CONFIDENCE;
 
   return (
     <aside
@@ -102,7 +102,7 @@ export default function DetailPanel({ utterance, context, isTurning, onClose, on
                               low ? "text-slate-400" : "text-slate-600"
                             }`}
                           >
-                            {score.toFixed(2)}
+                            {toPercent(score)}
                           </span>
                         </div>
                       );
@@ -124,13 +124,16 @@ export default function DetailPanel({ utterance, context, isTurning, onClose, on
 
                 {/* 안내 */}
                 {isTurning && (
-                  <div className="rounded-lg bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900">
-                    이 발화는 전환점으로 탐지되었습니다. 앞뒤 구간의 감정 분포가 크게 달라집니다.
+                  <div className="space-y-1 break-keep rounded-lg bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900">
+                    <p className="font-semibold">전환점</p>
+                    <p>앞뒤 구간의 감정 분포가 크게 달라지는 지점입니다.</p>
                   </div>
                 )}
-                {weak && (
-                  <div className="rounded-lg bg-slate-50 px-4 py-3 text-xs leading-relaxed text-slate-600">
-                    확신이 낮은 추론입니다. 위 문맥과 함께 판단해 주세요.
+                {mixed && (
+                  <div className="space-y-1 break-keep rounded-lg bg-slate-50 px-4 py-3 text-xs leading-relaxed text-slate-600">
+                    <p className="font-semibold text-slate-700">복합 발화</p>
+                    <p>점수가 두 감정 이상에 나뉜 발화입니다.</p>
+                    <p>위 문맥과 감정 분포를 함께 봐 주세요.</p>
                   </div>
                 )}
               </>
