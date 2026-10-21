@@ -1,6 +1,5 @@
 import type { Emotion, Utterance } from "../types";
 import { EMOTION_COLORS, LOW_CONFIDENCE, toPercent } from "../constants/emotions";
-import EmotionTag from "./EmotionTag";
 import UtteranceText from "./UtteranceText";
 
 interface Props {
@@ -108,18 +107,6 @@ export default function DetailPanel({ utterance, context, isTurning, onClose, on
                       );
                     })}
                   </div>
-                </section>
-
-                {/* 세부 감정 */}
-                <section>
-                  <h3 className="mb-2 text-xs text-slate-500">세부 감정 (소분류)</h3>
-                  {utterance.top && utterance.topSub ? (
-                    <EmotionTag emotion={utterance.top} size="md">
-                      {utterance.topSub}
-                    </EmotionTag>
-                  ) : (
-                    <p className="text-xs text-slate-400">세부 감정을 판단하기 어렵습니다.</p>
-                  )}
                 </section>
 
                 {/* 안내 */}

@@ -14,7 +14,6 @@ export interface Utterance {
   text: string;
   scores: EmotionScores | null;   // 상담자 발화는 null, 분석하지 않은 짧은 발화는 null
   top: Emotion | null;
-  topSub: string | null;
   confidence: number | null;
 }
 

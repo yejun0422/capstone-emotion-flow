@@ -19,14 +19,12 @@ CREATE DATABASE emotion CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ```
 DATABASE_URL=mysql+pymysql://root:비밀번호@localhost:3306/emotion?charset=utf8mb4
-DEMO_PASSWORD=시연계정비밀번호
 COOKIE_SECURE=false
 ```
 
 | 키 | 뜻 |
 |---|---|
 | `DATABASE_URL` | MySQL 접속 정보 |
-| `DEMO_PASSWORD` | `seed.py`가 만드는 시연 계정 `demo`의 비밀번호 (8자 이상 권장) |
 | `COOKIE_SECURE` | 로그인 쿠키를 HTTPS에서만 보낼지. 로컬 개발은 `false`, **배포할 때 `true`** |
 | `EMOTION_MODEL_DIR` | (선택) 모델 폴더 위치. 비워 두면 프로젝트 최상위의 `model/`을 씁니다 |
 
@@ -67,16 +65,6 @@ uvicorn app.main:app --reload
 
 테이블은 서버가 처음 뜰 때 자동으로 만들어지고, 감정 모델도 이때 한 번 불러옵니다.
 
-**6. (선택) 데모 데이터를 넣습니다.**
-
-```bash
-python seed.py
-```
-
-시연 계정 `demo`(비밀번호는 `.env`의 `DEMO_PASSWORD`)를 만들고,
-`frontend/src/data/dummy.json`을 읽어 그 계정 소유의 `demo-001` 세션을 만듭니다.
-여러 번 실행해도 결과는 같고, `.env`의 비밀번호를 바꾼 뒤 다시 실행하면 새 비밀번호가 적용됩니다.
-
 ---
 
 ## 폴더 구성
@@ -86,7 +74,6 @@ backend/
 ├── .env                    접속 정보 (git에 올리지 않음)
 ├── .env.example            .env 작성용 견본
 ├── requirements.txt        의존 패키지 목록
-├── seed.py                 시연 계정 + dummy.json → DB (개발용)
 └── app/
     ├── main.py             FastAPI 시작점, CORS, 라우터 등록
     ├── db.py               DB 연결
@@ -247,9 +234,9 @@ backend/
 `app/schemas.py`는 **프론트엔드의 `frontend/src/types.ts`와 거울 관계**입니다.
 한쪽을 바꾸면 반드시 다른 쪽도 바꾸고 팀에 공유해 주세요.
 
-필드 이름이 `topSub`처럼 파이썬답지 않은 것은 의도한 것입니다.
+필드 이름이 `turningPoints`처럼 파이썬답지 않은 것은 의도한 것입니다.
 프론트가 기대하는 JSON 키와 정확히 같아야 하기 때문입니다.
-DB 쪽(`models.py`)은 파이썬 관례대로 `top_sub`를 쓰고, `routers/sessions.py`에서 변환합니다.
+DB 쪽(`models.py`)은 파이썬 관례대로 `turning_points`를 쓰고, `routers/sessions.py`에서 변환합니다.
 
 ---
 
@@ -319,7 +306,7 @@ DELETE FROM users;
 SET SQL_SAFE_UPDATES = 1;
 ```
 
-계정까지 지워지므로 비운 뒤에는 `python seed.py`로 시연 계정과 데모 세션을 다시 넣습니다.
+계정까지 지워지므로 비운 뒤에는 다시 회원가입합니다.
 분석 기록만 지우고 계정은 남기려면 위에서 `DELETE FROM sessions;`까지만 실행하세요.
 
 **테이블 구조가 바뀌었을 때** — `create_all`은 이미 있는 테이블에 칸을 추가하지 않습니다.
@@ -345,8 +332,8 @@ DROP TABLE users;
 - [x] 업로드 · 진행률 · 결과 조회 · 삭제 API, 백그라운드 처리
 - [x] 후처리 (대표 감정, 전환점, 요약)
 - [x] 세션 목록 API
-- [x] 로그인 · 사용자별 세션 분리 (가입 · 로그인 · 로그아웃, 소유자 확인, 시연 계정)
+- [x] 로그인 · 사용자별 세션 분리 (가입 · 로그인 · 로그아웃, 소유자 확인)
 - [x] 감정 모델 연결 (KcELECTRA 멀티태스크, 서버 시작 시 로드)
 - [x] 전환점 탐지 봉우리 방식으로 교체
 - [x] 전환점 `window`·`threshold`, `LOW_CONFIDENCE` 튜닝
-- [ ] 세부 감정(`topSub`) 저장, 대표 감정 동점 처리
+- [x] 소분류 제거, 대표 감정 동점 처리, 업로드 한도 1MB, 분석 중 삭제 처리

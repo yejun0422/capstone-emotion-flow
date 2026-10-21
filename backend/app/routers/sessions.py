@@ -13,7 +13,7 @@ from app.services.pipeline import run
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
 
-MAX_SIZE = 5 * 1024 * 1024   # 5MB
+MAX_SIZE = 1 * 1024 * 1024   # 1MB (한 시간짜리 회기가 약 70KB)
 NOT_FOUND = "분석 결과를 찾을 수 없습니다."
 
 
@@ -36,7 +36,7 @@ async def create_session(
     """파일을 받아 분석을 시작한다. 즉시 세션 ID를 돌려준다. (화면 1)"""
     content = await file.read()
     if len(content) > MAX_SIZE:
-        raise HTTPException(status_code=413, detail="파일이 너무 큽니다. (최대 5MB)")
+        raise HTTPException(status_code=413, detail="파일이 너무 큽니다. (최대 1MB)")
     if not content:
         raise HTTPException(status_code=400, detail="빈 파일입니다.")
 
@@ -155,7 +155,6 @@ def get_session(
                 text=u.text,
                 scores=u.scores,
                 top=u.top,
-                topSub=u.top_sub,
                 confidence=u.confidence,
             )
             for u in row.utterances

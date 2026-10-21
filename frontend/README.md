@@ -17,7 +17,7 @@ npm install     # 처음 한 번만
 npm run dev     # 개발 서버 실행 → http://localhost:5173
 ```
 
-처음 들어가면 로그인 화면이 나옵니다. 회원가입하거나 시연 계정 `demo`로 로그인하세요.
+처음 들어가면 로그인 화면이 나옵니다. 회원가입한 뒤 `samples/`의 축어록을 올려 보세요.
 
 개발 중에는 Vite가 `/api`로 시작하는 요청을 `http://localhost:8000`(백엔드)으로 넘겨줍니다.
 설정은 `vite.config.ts`의 `server.proxy`에 있습니다.
@@ -73,9 +73,6 @@ src/
 ├── constants/
 │   ├── emotions.ts         감정 색상, 복합 기준값, % 표시 함수
 │   └── nonverbal.ts        비언어 판별 규칙 — backend/app/services/text_rules.py와 대응
-│
-├── data/
-│   └── dummy.json          데모 데이터 (백엔드 seed.py가 읽어 DB에 넣음)
 │
 └── components/
     ├── Progress.tsx        화면 2: 분석 진행률

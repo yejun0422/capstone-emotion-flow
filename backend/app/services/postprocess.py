@@ -54,6 +54,16 @@ def _mean_scores(items: list[dict]) -> dict[str, float]:
     return {e: sum(it["scores"][e] for it in items) / len(items) for e in EMOTIONS}
 
 
+def _dominant(targets: list[dict]) -> str:
+    """1등으로 가장 많이 나온 감정. 동점이면 평균 점수가 높은 감정.
+
+    동점을 set 순서에 맡기면 서버를 켤 때마다 다른 감정이 나올 수 있어서 기준을 정해 둔다.
+    """
+    tops = [u["top"] for u in targets]
+    mean = _mean_scores(targets)
+    return max(EMOTIONS, key=lambda e: (tops.count(e), mean[e]))
+
+
 def summarize(utterances: list[dict]) -> dict:
     """요약 지표를 계산한다."""
     targets = [u for u in utterances if u["top"]]
@@ -65,7 +75,7 @@ def summarize(utterances: list[dict]) -> dict:
     low = sum(1 for u in targets if u["confidence"] < LOW_CONFIDENCE)
 
     return {
-        "dominant": max(set(tops), key=tops.count),
+        "dominant": _dominant(targets),
         "volatility": round(changes / (len(tops) - 1), 2) if len(tops) > 1 else 0.0,
         "lowConfidenceRatio": round(low / len(targets), 2),
     }

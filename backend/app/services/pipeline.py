@@ -68,7 +68,6 @@ def run(session_id: str, content: bytes, filename: str, counselor: str | None, d
                 "text": r["text"],          # 원문 저장
                 "scores": scores,
                 "top": top,
-                "topSub": None,             # 소분류는 모델 연결 후
                 "confidence": confidence,
             })
 
@@ -84,7 +83,6 @@ def run(session_id: str, content: bytes, filename: str, counselor: str | None, d
                 text=u["text"],
                 scores=u["scores"],
                 top=u["top"],
-                top_sub=u["topSub"],
                 confidence=u["confidence"],
             ))
 
@@ -97,6 +95,8 @@ def run(session_id: str, content: bytes, filename: str, counselor: str | None, d
     except Exception as e:
         db.rollback()
         row = db.get(SessionRow, session_id)
+        if row is None:  # 분석 도중 사용자가 세션을 삭제함 — 실패를 기록할 곳이 없으니 그냥 끝낸다
+            return
         row.status = "failed"
         row.error = str(e)[:500]
         db.commit()

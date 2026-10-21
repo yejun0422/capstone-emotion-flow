@@ -56,7 +56,6 @@ class UtteranceRow(Base):
     text: Mapped[str] = mapped_column(Text)
     scores: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     top: Mapped[str | None] = mapped_column(String(10), nullable=True)
-    top_sub: Mapped[str | None] = mapped_column(String(20), nullable=True)
     confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     session: Mapped["SessionRow"] = relationship(back_populates="utterances")

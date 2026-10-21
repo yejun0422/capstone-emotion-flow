@@ -11,7 +11,6 @@ class Utterance(BaseModel):
     text: str
     scores: dict[Emotion, float] | None
     top: Emotion | None
-    topSub: str | None
     confidence: float | None
 
 
