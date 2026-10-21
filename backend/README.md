@@ -28,6 +28,7 @@ COOKIE_SECURE=false
 | `DATABASE_URL` | MySQL 접속 정보 |
 | `DEMO_PASSWORD` | `seed.py`가 만드는 시연 계정 `demo`의 비밀번호 (8자 이상 권장) |
 | `COOKIE_SECURE` | 로그인 쿠키를 HTTPS에서만 보낼지. 로컬 개발은 `false`, **배포할 때 `true`** |
+| `EMOTION_MODEL_DIR` | (선택) 모델 폴더 위치. 비워 두면 프로젝트 최상위의 `model/`을 씁니다 |
 
 **3. 가상환경과 패키지를 준비합니다.** (윈도우 cmd 기준)
 
@@ -38,7 +39,24 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-**4. 서버를 켭니다.**
+torch(PyTorch)가 들어 있어 몇 분 걸립니다.
+
+**4. 모델 가중치를 받습니다.**
+
+`model/README_emotion_model.md`의 구글 드라이브 링크에서 `final_kcelectra_multitask.pt`를 받아
+프로젝트 최상위의 `model/` 폴더에 넣습니다. 이 파일이 없으면 서버가 시작할 때
+"필요한 모델 파일/폴더가 없습니다" 오류로 멈춥니다.
+
+모델만 따로 확인하려면:
+
+```bash
+python -m app.services.emotion_model
+```
+
+처음 한 번은 Hugging Face에서 KcELECTRA 원본(약 1GB)을 내려받느라 오래 걸립니다.
+`symlinks`, `UNEXPECTED` 경고는 무시해도 됩니다.
+
+**5. 서버를 켭니다.**
 
 ```bash
 uvicorn app.main:app --reload
@@ -47,9 +65,9 @@ uvicorn app.main:app --reload
 - 서버: http://localhost:8000
 - API 문서: http://localhost:8000/docs (FastAPI가 자동 생성, 여기서 직접 눌러볼 수 있음)
 
-테이블은 서버가 처음 뜰 때 자동으로 만들어집니다.
+테이블은 서버가 처음 뜰 때 자동으로 만들어지고, 감정 모델도 이때 한 번 불러옵니다.
 
-**5. (선택) 데모 데이터를 넣습니다.**
+**6. (선택) 데모 데이터를 넣습니다.**
 
 ```bash
 python seed.py
@@ -82,7 +100,8 @@ backend/
         ├── parser.py       파일 → 발화 목록
         ├── text_rules.py   비언어 판별·분석용 텍스트 정리 규칙
         ├── masking.py      개인정보 가리기
-        ├── analyzer.py     감정 점수 산출 (현재 임시 구현)
+        ├── emotion_model.py  KcELECTRA 모델 불러오기 · 추론 (모델 담당 작성)
+        ├── analyzer.py     모델 결과에서 감정 6종 점수 꺼내기, 서버 시작 시 모델 로드
         ├── postprocess.py  대표 감정, 전환점, 요약 지표
         └── pipeline.py     위 단계를 순서대로 실행하고 저장
 ```
@@ -100,8 +119,8 @@ backend/
 | 파싱 | `parser.py` | 파일을 `{순서, 화자, 원문}` 목록으로 변환 |
 | 마스킹 | `masking.py` | 실명·전화번호·이메일 등을 `〈이름〉` 형태로 가림 |
 | 분석 대상 고르기 | `pipeline.py` + `text_rules.py` | 내담자 발화 중, 괄호류를 떼고도 내용이 남은 것만 |
-| 감정 분석 | `analyzer.py` | 문장마다 감정 6종 점수 |
-| 후처리 | `postprocess.py` | 대표 감정·신뢰도, 전환점, 요약 지표 |
+| 감정 분석 | `analyzer.py` + `emotion_model.py` | 문장마다 감정 6종 확률 (합이 1) |
+| 후처리 | `postprocess.py` | 대표 감정·신뢰도, 전환점(봉우리 방식), 요약 지표 |
 | 저장 | `pipeline.py` | 원문과 분석 결과를 DB에 저장 |
 
 분석은 업로드 요청과 별도로 백그라운드에서 돌고, 프론트는 진행률 API를 1초마다 확인합니다.
@@ -234,17 +253,46 @@ DB 쪽(`models.py`)은 파이썬 관례대로 `top_sub`를 쓰고, `routers/sess
 
 ---
 
-## 모델 연결 시
+## 감정 분석 모델
 
-`app/services/analyzer.py`의 `analyze()` 내부만 교체하면 됩니다.
+| 파일 | 역할 |
+|---|---|
+| `app/services/emotion_model.py` | 모델 담당이 작성한 로더. `EmotionClassifier.predict_many(문장 목록)`이 대분류 6종·소분류 58종 확률을 돌려줌 |
+| `app/services/analyzer.py` | 서버가 켜질 때 `load_model()`로 모델을 한 번만 불러 두고, `analyze()`에서 대분류 6종 점수만 꺼내 소수점 넷째 자리로 돌려줌 |
+| `model/` (프로젝트 최상위) | 가중치(`.pt`, 별도 다운로드) · 설정 · 토크나이저 · 성능 요약 |
 
 ```python
 def analyze(texts: list[str]) -> list[dict[str, float]]:
-    """문장마다 감정 6종 점수를 돌려준다."""
+    """문장마다 감정 6종 점수(합이 1인 확률)를 돌려준다."""
 ```
 
-입력은 이미 괄호류가 제거되고 분석 가능한 것만 걸러진 문장입니다.
-analyzer는 점수만 내면 되고, 어떤 문장을 분석할지는 신경 쓰지 않아도 됩니다.
+- 입력은 이미 괄호류가 제거되고 분석 가능한 것만 걸러진 문장입니다.
+  analyzer는 점수만 내면 되고, 어떤 문장을 분석할지는 `pipeline.py`가 정합니다.
+- 점수는 **확률**이라 합이 1입니다. 감정이 섞인 문장은 점수가 나뉘어 모두 낮게 나올 수 있으며,
+  이것이 "감정이 약하다"는 뜻은 아닙니다.
+- 모델 구조·학습·성능은 `model/README_emotion_model.md`와 `model/result/`를 참고하세요.
+- 서버를 켤 때 모델을 불러오므로, `--reload` 상태에서는 코드를 저장할 때마다 모델을 다시 불러옵니다.
+
+---
+
+## 전환점 탐지
+
+`postprocess.py`의 `find_turning_points(utterances, window=3, threshold=0.5)`
+
+1. 분석된 내담자 발화만 순서대로 놓습니다. (상담자 발화와 판단 보류 발화는 제외)
+2. 각 발화를 기준으로 앞쪽 `window`개와 뒤쪽 `window`개의 **평균 감정 분포**를 구하고,
+   두 분포가 얼마나 다른지(0~1)를 계산합니다.
+3. 그 차이가 `threshold` 이상이면서 이웃보다 큰 곳(**봉우리**)을 전환점으로 봅니다.
+4. `window`보다 가까이 붙은 봉우리는 더 높은 쪽 하나만 남깁니다.
+
+차이는 앞쪽이 모두 옛 감정, 뒤쪽이 모두 새 감정일 때, 즉 **정확히 경계에서** 가장 큽니다.
+이전 방식(앞뒤 평균의 1등 감정이 처음 바뀌는 곳)은 경계보다 한 칸 일찍 찍혀서 교체했습니다.
+
+`window`·`threshold`는 `samples/`의 정답 파일로 튜닝한 값입니다 (`scripts/evaluate.py`).
+튜닝용 6편 F1 0.863, 평가용 4편 F1 1.000 (같은 개수를 무작위로 찍으면 0.328).
+
+`LOW_CONFIDENCE = 0.7`: 1등 점수가 이보다 낮은 발화의 비율이 요약의 `lowConfidenceRatio`가 됩니다.
+프론트 `constants/emotions.ts`의 같은 이름 값과 **함께 고쳐야** 합니다.
 
 ---
 
@@ -295,8 +343,10 @@ DROP TABLE users;
 - [x] 파서 — 축어록 · CSV · 카톡, 화자 표기 정리, 비언어 정보 분리
 - [x] 마스킹
 - [x] 업로드 · 진행률 · 결과 조회 · 삭제 API, 백그라운드 처리
-- [x] 임시 분석기, 후처리 (대표 감정, 전환점, 요약)
+- [x] 후처리 (대표 감정, 전환점, 요약)
 - [x] 세션 목록 API
 - [x] 로그인 · 사용자별 세션 분리 (가입 · 로그인 · 로그아웃, 소유자 확인, 시연 계정)
-- [ ] 실제 모델 연결
-- [ ] 전환점 알고리즘 튜닝
+- [x] 감정 모델 연결 (KcELECTRA 멀티태스크, 서버 시작 시 로드)
+- [x] 전환점 탐지 봉우리 방식으로 교체
+- [x] 전환점 `window`·`threshold`, `LOW_CONFIDENCE` 튜닝
+- [ ] 세부 감정(`topSub`) 저장, 대표 감정 동점 처리

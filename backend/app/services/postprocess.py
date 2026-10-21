@@ -2,7 +2,7 @@
 
 from app.services.analyzer import EMOTIONS
 
-LOW_CONFIDENCE = 0.5
+LOW_CONFIDENCE = 0.7
 
 
 def pick_top(scores: dict[str, float] | None) -> tuple[str | None, float | None]:
@@ -13,7 +13,7 @@ def pick_top(scores: dict[str, float] | None) -> tuple[str | None, float | None]
     return top, scores[top]
 
 
-def find_turning_points(utterances: list[dict], window: int = 3, threshold: float = 0.4) -> list[int]:
+def find_turning_points(utterances: list[dict], window: int = 3, threshold: float = 0.5) -> list[int]:
     """감정 흐름이 크게 바뀌는 지점의 발화 번호를 찾는다.
 
     분석된 내담자 발화를 순서대로 보며, 어떤 발화를 기준으로

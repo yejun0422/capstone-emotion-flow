@@ -24,4 +24,4 @@ export const EMOTION_TEXT: Record<Emotion, string> = {
 export const GRAY = "#D3D1C7";
 
 // 신뢰도가 이 값보다 낮으면 "확신 없는 추론"으로 흐리게 표시
-export const LOW_CONFIDENCE = 0.5;
+export const LOW_CONFIDENCE = 0.7;
