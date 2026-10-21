@@ -48,9 +48,9 @@ export default function EmotionChart({
   const [view, setView] = useState<View>("line");
 
   // Recharts가 원하는 평평한 모양으로 변환: { index, 불안, 분노, ... }
-  // 구성비 그래프는 점수가 없는 발화(판단 보류)를 빼야 쌓인 모양이 끊기지 않는다
+  // 점수가 없는 발화(판단 보류)는 빼서, 두 그래프 모두 선과 면이 끊기지 않고 이어지게 한다
   const chartData = utterances
-    .filter((u) => view === "line" || u.scores !== null)
+    .filter((u) => u.scores !== null)
     .map((u) => ({
       index: u.index,
       ...u.scores,
