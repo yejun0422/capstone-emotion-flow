@@ -26,7 +26,7 @@ export const GRAY = "#D3D1C7";
 
 // 1등 점수가 이 값보다 낮으면 한 감정이 뚜렷하지 않은 "복합" 발화로 보고 1·2등을 함께 표시
 // (backend/app/services/postprocess.py의 MIXED_THRESHOLD와 같은 값이어야 함)
-	export const MIXED_THRESHOLD = 0.7;
+export const MIXED_THRESHOLD = 0.7;
 
 // 점수(0~1)를 정수 퍼센트로 표시. 소수점 아래는 버림 (0.4175 → "41%", 0.006 → "0%")
 // 1e-6은 0.29 × 100 = 28.999…처럼 컴퓨터 계산 오차로 1%가 깎이는 것을 막기 위한 값

@@ -85,9 +85,9 @@ export default function EmotionChart({
       <ReferenceLine
         key={`tp-${tp}`}
         x={tp}
-        // 흰 배경(감정별 선)에서는 검정, 색 면(구성비) 위에서는 흰색 점선
-        stroke={view === "line" ? "#1C1E21" : "#FFFFFF"}
-        strokeWidth={view === "line" ? 1.5 : 2}
+        // 구성비에서 모든 감정이 켜져 그래프가 꽉 찼을 때만 흰 점선, 나머지는 검정 점선
+        stroke={view === "mix" && hidden.length === 0 ? "#FFFFFF" : "#1C1E21"}
+        strokeWidth={view === "mix" && hidden.length === 0 ? 2 : 1.5}
         strokeDasharray="5 4"
       />
     )),
