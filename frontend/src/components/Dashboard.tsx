@@ -6,6 +6,7 @@ import EmotionBand from "./EmotionBand";
 import EmotionChart from "./EmotionChart";
 import Transcript from "./Transcript";
 import DetailPanel from "./DetailPanel";
+import ScrollTopButton from "./ScrollTopButton";
 
 interface Props {
   data: Session;
@@ -110,6 +111,8 @@ export default function Dashboard({ data }: Props) {
         onClose={() => setSelected(null)}
         onSelect={selectAndScroll}
       />
+
+      <ScrollTopButton panelOpen={selected !== null} />
     </>
   );
 }
