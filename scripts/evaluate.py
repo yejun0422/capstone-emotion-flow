@@ -112,7 +112,7 @@ def utterance_report(answers, cache, split):
 
 
 def confidence_report(rows):
-    print("\n  1등 점수 구간별 정답률 (엄격) — 확신 낮음 기준(LOW_CONFIDENCE) 정하기용")
+    print("\n  1등 점수 구간별 정답률 (엄격) — 복합 기준(MIXED_THRESHOLD) 정하기용")
     edges = [0.0, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.01]
     for lo, hi in zip(edges, edges[1:]):
         part = [r for r in rows if lo <= r[2] < hi]
@@ -170,7 +170,7 @@ def grid(answers, cache):
     for w in WINDOWS:
         for t in THRESHOLDS:
             ps, rs, fs, _ = turning_scores(answers, cache, "tune", w, t, lenient=False)
-            pl, rl, fl, _ = turning_scores(answers, cache, "tune", w, t, lenient=True)
+            _, _, fl, _ = turning_scores(answers, cache, "tune", w, t, lenient=True)
             table.append((w, t, ps, rs, fs, fl))
             key = (fs, fl, ps)
             if best is None or key > best[0]:

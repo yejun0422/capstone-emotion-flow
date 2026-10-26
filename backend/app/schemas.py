@@ -17,7 +17,7 @@ class Utterance(BaseModel):
 class Summary(BaseModel):
     dominant: Emotion
     volatility: float
-    lowConfidenceRatio: float
+    mixedRatio: float
 
 
 class Session(BaseModel):

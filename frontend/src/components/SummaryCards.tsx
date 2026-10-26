@@ -11,7 +11,7 @@ export default function SummaryCards({ summary, turningCount }: Props) {
     { label: "대표 감정", value: summary.dominant },
     { label: "전환점", value: `${turningCount}회` },
     { label: "감정 변동성", value: summary.volatility },
-    { label: "복합 발화", value: `${Math.round(summary.lowConfidenceRatio * 100)}%` },
+    { label: "복합 발화", value: `${Math.round(summary.mixedRatio * 100)}%` },
   ];
 
   return (

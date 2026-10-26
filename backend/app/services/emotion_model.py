@@ -12,7 +12,7 @@ from typing import Any, Sequence
 
 import torch
 import torch.nn as nn
-from transformers import AutoModel, AutoTokenizer
+from transformers import AutoConfig, AutoModel, AutoTokenizer
 
 
 EXPECTED_EMOTIONS = ["불안", "분노", "상처", "슬픔", "당황", "기쁨"]
@@ -29,7 +29,9 @@ class MultiTaskKcELECTRA(nn.Module):
         dropout: float = 0.1,
     ) -> None:
         super().__init__()
-        self.encoder = AutoModel.from_pretrained(model_name)
+        # 구조(설정)만 받아 빈 모델을 만든다. 가중치는 아래에서 우리 .pt로 전부 채우므로
+        # 원본 가중치(약 1GB)를 내려받을 필요가 없다.
+        self.encoder = AutoModel.from_config(AutoConfig.from_pretrained(model_name))
         hidden_size = self.encoder.config.hidden_size
         self.dropout = nn.Dropout(dropout)
         self.major_classifier = nn.Linear(hidden_size, num_major_labels)

@@ -41,7 +41,7 @@ torch(PyTorch)가 들어 있어 몇 분 걸립니다.
 
 **4. 모델 가중치를 받습니다.**
 
-`model/README_emotion_model.md`의 구글 드라이브 링크에서 `final_kcelectra_multitask.pt`를 받아
+`model/README.md`의 구글 드라이브 링크에서 `final_kcelectra_multitask.pt`를 받아
 프로젝트 최상위의 `model/` 폴더에 넣습니다. 이 파일이 없으면 서버가 시작할 때
 "필요한 모델 파일/폴더가 없습니다" 오류로 멈춥니다.
 
@@ -51,8 +51,8 @@ torch(PyTorch)가 들어 있어 몇 분 걸립니다.
 python -m app.services.emotion_model
 ```
 
-처음 한 번은 Hugging Face에서 KcELECTRA 원본(약 1GB)을 내려받느라 오래 걸립니다.
-`symlinks`, `UNEXPECTED` 경고는 무시해도 됩니다.
+처음 한 번은 Hugging Face에서 KcELECTRA 설정 파일(수 KB)을 내려받습니다.
+`symlinks` 경고는 무시해도 됩니다.
 
 **5. 서버를 켭니다.**
 
@@ -75,7 +75,7 @@ backend/
 ├── .env.example            .env 작성용 견본
 ├── requirements.txt        의존 패키지 목록
 └── app/
-    ├── main.py             FastAPI 시작점, CORS, 라우터 등록
+    ├── main.py             FastAPI 시작점, 라우터 등록
     ├── db.py               DB 연결
     ├── models.py           DB 테이블 정의 (users, login_sessions, sessions, utterances)
     ├── schemas.py          API 입출력 모양 (Pydantic) — types.ts와 대응
@@ -257,7 +257,7 @@ def analyze(texts: list[str]) -> list[dict[str, float]]:
   analyzer는 점수만 내면 되고, 어떤 문장을 분석할지는 `pipeline.py`가 정합니다.
 - 점수는 **확률**이라 합이 1입니다. 감정이 섞인 문장은 점수가 나뉘어 모두 낮게 나올 수 있으며,
   이것이 "감정이 약하다"는 뜻은 아닙니다.
-- 모델 구조·학습·성능은 `model/README_emotion_model.md`와 `model/result/`를 참고하세요.
+- 모델 구조·학습·성능은 `model/README.md`와 `model/result/`를 참고하세요.
 - 서버를 켤 때 모델을 불러오므로, `--reload` 상태에서는 코드를 저장할 때마다 모델을 다시 불러옵니다.
 
 ---
@@ -278,7 +278,7 @@ def analyze(texts: list[str]) -> list[dict[str, float]]:
 `window`·`threshold`는 `samples/`의 정답 파일로 튜닝한 값입니다 (`scripts/evaluate.py`).
 튜닝용 6편 F1 0.863, 평가용 4편 F1 1.000 (같은 개수를 무작위로 찍으면 0.328).
 
-`LOW_CONFIDENCE = 0.7`: 1등 점수가 이보다 낮은 발화의 비율이 요약의 `lowConfidenceRatio`가 됩니다.
+`MIXED_THRESHOLD = 0.7`: 1등 점수가 이보다 낮은 발화를 "복합"으로 보고, 그 비율이 요약의 `mixedRatio`가 됩니다.
 프론트 `constants/emotions.ts`의 같은 이름 값과 **함께 고쳐야** 합니다.
 
 ---
@@ -335,5 +335,5 @@ DROP TABLE users;
 - [x] 로그인 · 사용자별 세션 분리 (가입 · 로그인 · 로그아웃, 소유자 확인)
 - [x] 감정 모델 연결 (KcELECTRA 멀티태스크, 서버 시작 시 로드)
 - [x] 전환점 탐지 봉우리 방식으로 교체
-- [x] 전환점 `window`·`threshold`, `LOW_CONFIDENCE` 튜닝
+- [x] 전환점 `window`·`threshold`, 복합 기준(`MIXED_THRESHOLD`) 튜닝
 - [x] 소분류 제거, 대표 감정 동점 처리, 업로드 한도 1MB, 분석 중 삭제 처리

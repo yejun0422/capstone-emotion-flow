@@ -2,7 +2,7 @@
 
 from app.services.analyzer import EMOTIONS
 
-LOW_CONFIDENCE = 0.7
+MIXED_THRESHOLD = 0.7
 
 
 def pick_top(scores: dict[str, float] | None) -> tuple[str | None, float | None]:
@@ -68,14 +68,14 @@ def summarize(utterances: list[dict]) -> dict:
     """요약 지표를 계산한다."""
     targets = [u for u in utterances if u["top"]]
     if not targets:
-        return {"dominant": "불안", "volatility": 0.0, "lowConfidenceRatio": 0.0}
+        return {"dominant": "불안", "volatility": 0.0, "mixedRatio": 0.0}
 
     tops = [u["top"] for u in targets]
     changes = sum(1 for a, b in zip(tops, tops[1:]) if a != b)
-    low = sum(1 for u in targets if u["confidence"] < LOW_CONFIDENCE)
+    mixed = sum(1 for u in targets if u["confidence"] < MIXED_THRESHOLD)
 
     return {
         "dominant": _dominant(targets),
         "volatility": round(changes / (len(tops) - 1), 2) if len(tops) > 1 else 0.0,
-        "lowConfidenceRatio": round(low / len(targets), 2),
+        "mixedRatio": round(mixed / len(targets), 2),
     }

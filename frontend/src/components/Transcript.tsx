@@ -1,5 +1,5 @@
 import type { Emotion, Utterance } from "../types";
-import { LOW_CONFIDENCE, toPercent } from "../constants/emotions";
+import { MIXED_THRESHOLD, toPercent } from "../constants/emotions";
 import EmotionTag from "./EmotionTag";
 import UtteranceText from "./UtteranceText";
 
@@ -26,7 +26,7 @@ export default function Transcript({ utterances, turningPoints, selected, onSele
           const isTurning = turningSet.has(u.index);
           // 1등 점수가 기준보다 낮으면 "복합": 1·2등을 함께 보여 준다
           const second =
-            u.scores && u.confidence !== null && u.confidence < LOW_CONFIDENCE
+            u.scores && u.confidence !== null && u.confidence < MIXED_THRESHOLD
               ? (Object.entries(u.scores) as [Emotion, number][]).sort((a, b) => b[1] - a[1])[1]
               : null;
 

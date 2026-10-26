@@ -29,15 +29,15 @@ A4 15장짜리 상담 기록을 처음부터 읽지 않고도 감정의 흐름�
 
 모델 가중치는 용량 때문에 저장소에 없습니다. 서버를 켜기 전에 아래를 먼저 해 주세요.
 
-1. `model/README_emotion_model.md`의 구글 드라이브 링크에서 `final_kcelectra_multitask.pt`를 받아 **`model/` 폴더**에 넣습니다.
+1. `model/README.md`의 구글 드라이브 링크에서 `final_kcelectra_multitask.pt`를 받아 **`model/` 폴더**에 넣습니다.
    `git status`에 이 파일이 보이지 않아야 정상입니다 (`.gitignore`의 `*.pt`).
 2. `backend` 폴더에서 패키지를 설치합니다. torch가 포함되어 있어 몇 분 걸립니다.
    ```bash
    pip install -r requirements.txt
    ```
-3. 서버를 **처음 켤 때** Hugging Face에서 KcELECTRA 원본 모델(약 1GB)을 내려받습니다.
+3. 서버를 **처음 켤 때** Hugging Face에서 KcELECTRA 설정 파일(수 KB)만 내려받습니다.
    `C:\Users\<사용자>\.cache\huggingface`에 저장되므로 두 번째부터는 받지 않습니다.
-   `symlinks`, `UNEXPECTED` 경고는 무시해도 됩니다.
+   `symlinks` 경고는 무시해도 됩니다.
 
 모델만 따로 확인하려면 `backend` 폴더에서 `python -m app.services.emotion_model`을 실행합니다.
 
@@ -194,7 +194,7 @@ http://localhost:5173 에 들어가면 로그인 화면이 먼저 나옵니다.
 - [x] 감정 분류 모델 학습 및 연결
 - [x] 전환점 탐지를 봉우리 방식으로 교체
 - [x] 평가 스크립트 (샘플 10편 × 정답 비교)
-- [x] 튜닝 — 전환점 `window`·`threshold`, 확신 낮음 기준
+- [x] 튜닝 — 전환점 `window`·`threshold`, 복합 기준
 - [x] 복합 감정 표시, 그래프 전환(감정별 선 / 구성비), 감정 색 변경, 점수 % 표시
 - [x] 소분류 제거, 대표 감정 동점 처리, 업로드 한도 1MB, 분석 중 삭제 처리, 더미 데이터 삭제
 - [ ] 배포
@@ -211,7 +211,7 @@ http://localhost:5173 에 들어가면 로그인 화면이 먼저 나옵니다.
 - [x] **전환점 튜닝**: `window=3`, `threshold=0.5`. 튜닝용 6편 F1 0.863, **평가용 4편 F1 1.000**
       (같은 개수를 무작위로 찍으면 0.328). 후보끼리 차이가 전환점 1개 수준이라,
       모델 오분류를 섞었을 때 덜 무너지는 값을 고름. 샘플이 실제 축어록보다 감정이 또렷해 점수가 높게 나온 것임
-- [x] **확신 낮음 기준**: `LOW_CONFIDENCE = 0.7` (백엔드 `postprocess.py`, 프론트 `constants/emotions.ts` 두 곳).
+- [x] **복합 기준**: `MIXED_THRESHOLD = 0.7` (백엔드 `postprocess.py`, 프론트 `constants/emotions.ts` 두 곳).
       1등 점수 0.7 미만은 정답률 약 53%, 이상은 96%
 - [x] **복합 감정 표시**: 0.7 미만 발화의 91%는 점수가 두 감정으로 나뉜 경우라 "확신 낮음"보다 "복합"이 정확함.
       흐리게 하지 않고 1·2등을 함께 표시, 요약 카드도 "복합 발화"로
@@ -233,10 +233,8 @@ http://localhost:5173 에 들어가면 로그인 화면이 먼저 나옵니다.
 - [ ] 백엔드: `--reload` 없이 실행, 서버 재부팅·오류 시 자동 재시작되도록 등록
 - [ ] **torch는 CPU 버전으로 설치** — 리눅스에서 `requirements.txt` 그대로 설치하면 GPU 버전(수 GB)이 깔림
 - [ ] 모델 가중치(`.pt`)를 서버로 직접 복사 (저장소에 없음)
-- [ ] 서버 첫 실행 시 KcELECTRA 원본(약 1GB) 다운로드 — 실제로는 설정 파일만 필요하므로
-      `emotion_model.py`에서 원본 가중치를 받지 않도록 바꿀지 팀원과 협의
+- [x] 서버 첫 실행 시 KcELECTRA 원본(약 1GB)을 받던 것 — 설정 파일만 받도록 수정 (`emotion_model.py`)
 - [ ] `.env`: `COOKIE_SECURE=true`, 배포용 DB 접속 정보
-- [ ] `main.py`의 CORS 허용 주소를 배포 주소로
 - [ ] 시간대: 서버가 UTC면 목록 시각이 9시간 어긋남
 - [ ] 업로드 크기 검사를 파일을 다 읽기 전에 하도록
 - [ ] 로그인 시도 횟수 제한

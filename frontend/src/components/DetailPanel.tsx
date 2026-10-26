@@ -1,5 +1,5 @@
 import type { Emotion, Utterance } from "../types";
-import { EMOTION_COLORS, LOW_CONFIDENCE, toPercent } from "../constants/emotions";
+import { EMOTION_COLORS, MIXED_THRESHOLD, toPercent } from "../constants/emotions";
 import UtteranceText from "./UtteranceText";
 
 interface Props {
@@ -19,7 +19,7 @@ export default function DetailPanel({ utterance, context, isTurning, onClose, on
     ? (Object.entries(utterance.scores) as [Emotion, number][]).sort((a, b) => b[1] - a[1])
     : [];
 
-  const mixed = utterance?.confidence != null && utterance.confidence < LOW_CONFIDENCE;
+  const mixed = utterance?.confidence != null && utterance.confidence < MIXED_THRESHOLD;
 
   return (
     <aside

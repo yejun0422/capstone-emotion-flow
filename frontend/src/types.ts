@@ -21,7 +21,7 @@ export interface Utterance {
 export interface Summary {
   dominant: Emotion;
   volatility: number;
-  lowConfidenceRatio: number;
+  mixedRatio: number;
 }
 
 // 분석 결과 전체
