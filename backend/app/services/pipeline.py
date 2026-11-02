@@ -6,6 +6,7 @@ DB에는 원문(text)만 저장한다. 괄호류 지문도 원문에 그대로 �
 분석용 텍스트는 저장하지 않고, 분석 직전에 text_rules.clean_text()로 만든다.
 """
 
+from sqlalchemy import update
 from sqlalchemy.orm import Session as DBSession
 
 from app.models import SessionRow, UtteranceRow
@@ -14,6 +15,19 @@ from app.services.analyzer import analyze
 from app.services.text_rules import clean_text, is_analyzable
 
 BATCH_SIZE = 32
+
+
+def fail_unfinished(db: DBSession) -> None:
+    """서버가 켜질 때 부른다. 분석 도중 서버가 꺼져 'processing'으로 남은 세션을 실패로 바꾼다.
+
+    서버 프로세스가 하나라는 전제다. 서버가 켜지는 시점에는 진행 중인 분석이 있을 수 없다.
+    """
+    db.execute(
+        update(SessionRow)
+        .where(SessionRow.status == "processing")
+        .values(status="failed", error="서버가 다시 시작되어 분석이 중단되었습니다. 파일을 다시 올려 주세요.")
+    )
+    db.commit()
 
 
 def run(session_id: str, content: bytes, filename: str, counselor: str | None, db: DBSession):

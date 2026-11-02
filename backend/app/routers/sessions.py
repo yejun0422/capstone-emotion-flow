@@ -34,7 +34,8 @@ async def create_session(
     user: UserRow = Depends(get_current_user),
 ):
     """파일을 받아 분석을 시작한다. 즉시 세션 ID를 돌려준다. (화면 1)"""
-    content = await file.read()
+    # 최대 크기보다 1바이트만 더 읽어 본다. 아주 큰 파일을 통째로 메모리에 올리지 않기 위해
+    content = await file.read(MAX_SIZE + 1)
     if len(content) > MAX_SIZE:
         raise HTTPException(status_code=413, detail="파일이 너무 큽니다. (최대 1MB)")
     if not content:

@@ -7,9 +7,12 @@ from app.models import UserRow
 from app.schemas import LoginRequest, SignupRequest, User
 from app.services.auth import (
     DUMMY_HASH,
+    check_login_allowed,
+    clear_login_failures,
     end_login_session,
     get_current_user,
     hash_password,
+    record_login_failure,
     start_login_session,
     verify_password,
 )
@@ -36,13 +39,18 @@ def signup(body: SignupRequest, response: Response, db: DBSession = Depends(get_
 @router.post("/login", response_model=User)
 def login(body: LoginRequest, response: Response, db: DBSession = Depends(get_db)):
     """로그인. 성공하면 쿠키가 내려간다."""
+    check_login_allowed(body.username)
+
     user = db.scalar(select(UserRow).where(UserRow.username == body.username))
     if user is None:
         verify_password(body.password, DUMMY_HASH)   # 없는 아이디여도 같은 시간이 걸리게
+        record_login_failure(body.username)
         raise HTTPException(status_code=401, detail="아이디 또는 비밀번호가 올바르지 않습니다.")
     if not verify_password(body.password, user.password_hash):
+        record_login_failure(body.username)
         raise HTTPException(status_code=401, detail="아이디 또는 비밀번호가 올바르지 않습니다.")
 
+    clear_login_failures(body.username)
     start_login_session(db, response, user)
     return User(id=user.id, username=user.username)
 

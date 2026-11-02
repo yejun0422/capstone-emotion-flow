@@ -1,6 +1,8 @@
 import hashlib
 import os
 import secrets
+import threading
+import time
 from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException, Request, Response
@@ -18,6 +20,48 @@ COOKIE_SECURE = os.getenv("COOKIE_SECURE", "false").lower() == "true"
 password_hasher = PasswordHash.recommended()   # Argon2
 # 없는 아이디로 로그인할 때도 비교 시간을 맞추기 위한 가짜 해시
 DUMMY_HASH = password_hasher.hash("dummy-password-for-timing")
+
+
+# ── 로그인 시도 제한 ─────────────────────────────────
+# 같은 아이디로 10분 안에 5번 틀리면 10분 동안 로그인을 막는다. (비밀번호 맞히기 공격 방지)
+# 서버 메모리에만 기록하므로 서버를 다시 켜면 초기화된다. 서버 프로세스가 하나라는 전제다.
+MAX_LOGIN_FAILS = 5
+LOGIN_WINDOW_SECONDS = 600
+
+_login_fails: dict[str, list[float]] = {}
+_login_fails_lock = threading.Lock()
+
+
+def _recent_fails(key: str, now: float) -> list[float]:
+    """10분 안의 실패 기록만 남긴다. (잠금 안에서 부른다)"""
+    recent = [t for t in _login_fails.get(key, []) if now - t < LOGIN_WINDOW_SECONDS]
+    if recent:
+        _login_fails[key] = recent
+    else:
+        _login_fails.pop(key, None)
+    return recent
+
+
+def check_login_allowed(username: str) -> None:
+    """실패가 너무 많으면 429로 막는다."""
+    with _login_fails_lock:
+        if len(_recent_fails(username.lower(), time.time())) >= MAX_LOGIN_FAILS:
+            raise HTTPException(
+                status_code=429,
+                detail="로그인 시도가 너무 많습니다. 10분 뒤에 다시 시도해 주세요.",
+            )
+
+
+def record_login_failure(username: str) -> None:
+    now = time.time()
+    with _login_fails_lock:
+        key = username.lower()
+        _login_fails[key] = _recent_fails(key, now) + [now]
+
+
+def clear_login_failures(username: str) -> None:
+    with _login_fails_lock:
+        _login_fails.pop(username.lower(), None)
 
 
 def hash_password(password: str) -> str:

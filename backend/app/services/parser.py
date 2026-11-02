@@ -22,6 +22,7 @@ from app.services.text_rules import CLOSERS_RE, OPENERS, is_whole_bracket, norma
 
 MERGE_LIMIT = 3      # 같은 화자의 연속 발화를 최대 몇 개까지 합칠지
 MIN_UTTERANCES = 5   # 이보다 적으면 분석할 수 없다고 본다
+MAX_LINE = 5000      # 한 줄 최대 글자 수. 이보다 길면 정상 축어록이 아니라고 보고 거부한다
 
 
 class ParseError(Exception):
@@ -70,6 +71,12 @@ def parse(content: bytes | str, filename: str = "") -> list[dict]:
     """파일 내용을 발화 목록으로 변환한다."""
     text = _decode(content) if isinstance(content, bytes) else content
     text = normalize_dots(text)
+
+    longest = max((len(line) for line in text.splitlines()), default=0)
+    if longest > MAX_LINE:
+        raise ParseError(
+            f"한 줄이 너무 깁니다({longest:,}자). 한 줄은 {MAX_LINE:,}자 이하여야 합니다."
+        )
 
     if filename.lower().endswith(".csv"):
         rows = _parse_csv(text)
