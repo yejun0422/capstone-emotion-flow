@@ -1,0 +1,78 @@
+{
+  "n": 6641,
+  "major": {
+    "accuracy": 0.7726246047282036,
+    "macro_f1": 0.7671283073144409,
+    "weighted_f1": 0.7729946273266795,
+    "macro_f1_ci95": [
+      0.757517597527554,
+      0.7777730496255794
+    ],
+    "n": 6641
+  },
+  "minor": {
+    "accuracy": 0.5423881945490137,
+    "macro_f1": 0.5300807437239343,
+    "weighted_f1": 0.5431202451695721,
+    "macro_f1_ci95": [
+      0.517350489555191,
+      0.5420344321902791
+    ],
+    "n": 6641
+  },
+  "errors": {
+    "output_error_count": 0,
+    "output_error_rate": 0.0,
+    "json_error": 0,
+    "schema_error": 0
+  },
+  "tag": "exaone_cls_head",
+  "model_key": "exaone",
+  "model_display": "EXAONE-4.0-1.2B",
+  "method": "cls_head",
+  "run_mode": "full",
+  "timestamp": "2026-11-11 03:27:54",
+  "n_eval": 6641,
+  "total_gen_s": 68.29370546340942,
+  "mean_gen_s_per_sample": 0.010283647863786993,
+  "infer_peak_vram_gib": 2.7451634407043457,
+  "latency_bs1_s": 0.09106222629547119,
+  "train_s": 4714.072448253632,
+  "train_peak_vram_gib": 3.2322168350219727,
+  "train_steps": 3227,
+  "base_model_id": "LGAI-EXAONE/EXAONE-4.0-1.2B",
+  "versions": {
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "cuda": "13.0",
+    "transformers": "5.22.1",
+    "peft": "0.21.2",
+    "accelerate": "1.15.0",
+    "scikit-learn": "1.6.1",
+    "pandas": "2.2.3",
+    "numpy": "2.4.6",
+    "bitsandbytes": "0.50.2"
+  },
+  "lora_cfg": {
+    "r": 16,
+    "alpha": 32,
+    "dropout": 0.05
+  },
+  "b_cfg": {
+    "base": "all",
+    "epochs": 2,
+    "lr_lora": 0.0002,
+    "lr_head": 0.001,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.03,
+    "max_grad_norm": 1.0,
+    "micro_bs": 16,
+    "accum": 2,
+    "save_steps": 200,
+    "log_steps": 20,
+    "dropout": 0.1,
+    "init_scale": 256.0,
+    "growth_interval": 200
+  },
+  "probabilities": true
+}
