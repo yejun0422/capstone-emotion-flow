@@ -66,7 +66,7 @@ http://localhost:5173 에 들어가면 로그인 화면이 먼저 나옵니다.
 
 ### 배포된 서버
 
-https://emotion-flow.duckdns.org
+https://emotion-flow.me
 
 - 크레딧을 아끼려고 **필요할 때만 켜 둡니다.** 접속이 안 되면 김예준에게 말해 주세요.
 - 구성: AWS EC2 한 대 안에 Caddy(HTTPS · 화면 파일 · `/api` 전달) + FastAPI + 모델 + MySQL
