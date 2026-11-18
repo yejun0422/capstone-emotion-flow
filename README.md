@@ -84,6 +84,7 @@ https://emotion-flow.duckdns.org
 ```
 
 - **감정 분석** (`backend/app/services/analyzer.py`): 내담자 발화마다 감정 6종의 확률(합이 1)을 냅니다.
+  바로 앞 내담자 발화를 붙여 넣은 점수를 30% 섞어 맥락을 반영합니다 (`CONTEXT_WEIGHT`, 다음 발화는 쓰지 않음).
   모델을 불러오는 코드는 팀원이 작성한 `emotion_model.py`이고, `analyze()`는 그 결과에서 6개 점수만 꺼냅니다.
 - **전환점** (`backend/app/services/postprocess.py`): 앞뒤 발화 몇 개의 평균 감정 분포가 가장 크게 달라지는
   지점(봉우리)을 찾습니다. 샘플 정답으로 튜닝해 `window=3`, `threshold=0.5`로 정했습니다.
@@ -207,6 +208,7 @@ https://emotion-flow.duckdns.org
 - [x] 복합 감정 표시, 그래프 전환(감정별 선 / 구성비), 감정 색 변경, 점수 % 표시
 - [x] 소분류 제거, 대표 감정 동점 처리, 업로드 한도 1MB, 분석 중 삭제 처리, 더미 데이터 삭제
 - [x] 배포 — AWS EC2 + Caddy, HTTPS 도메인 연결
+- [x] 감정 분석에 이전 내담자 발화 맥락 반영 (단독 0.7 + 이전 발화와 묶음 0.3, 다음 발화는 안 씀)
 
 ---
 
@@ -216,8 +218,8 @@ https://emotion-flow.duckdns.org
 
 - [x] **평가 스크립트** (`scripts/evaluate.py`): 샘플 10편을 실제 모델로 분석해 `samples/answers.json`과 비교.
       결과는 화면에만 출력 (`python scripts/evaluate.py --window 3 --threshold 0.5`)
-      — 발화별 정답률 엄격 87.6% · 완화 93.3% (225개)
-- [x] **전환점 튜닝**: `window=3`, `threshold=0.5`. 튜닝용 6편 F1 0.863, **평가용 4편 F1 1.000**
+      — 발화별 정답률 엄격 90.2% · 완화 95.1% (225개, 이전 발화 맥락 반영 후 / 반영 전 87.6% · 93.3%)
+- [x] **전환점 튜닝**: `window=3`, `threshold=0.5`. 튜닝용 6편 F1 0.894, **평가용 4편 F1 1.000**
       (같은 개수를 무작위로 찍으면 0.328). 후보끼리 차이가 전환점 1개 수준이라,
       모델 오분류를 섞었을 때 덜 무너지는 값을 고름. 샘플이 실제 축어록보다 감정이 또렷해 점수가 높게 나온 것임
 - [x] **복합 기준**: `MIXED_THRESHOLD = 0.7` (백엔드 `postprocess.py`, 프론트 `constants/emotions.ts` 두 곳).

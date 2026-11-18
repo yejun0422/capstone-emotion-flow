@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session as DBSession
 
 from app.models import SessionRow, UtteranceRow
 from app.services import masking, parser, postprocess
-from app.services.analyzer import analyze
+from app.services.analyzer import analyze_with_context
 from app.services.text_rules import clean_text, is_analyzable
 
 BATCH_SIZE = 32
@@ -60,11 +60,12 @@ def run(session_id: str, content: bytes, filename: str, counselor: str | None, d
         row.total = len(targets)
         db.commit()
 
-        # 4. 감정 분석 — 배치로
+        # 4. 감정 분석 — 배치로, 바로 앞 내담자 발화를 맥락으로 함께 본다
         scores_by_index: dict[int, dict] = {}
         for i in range(0, len(targets), BATCH_SIZE):
             batch = targets[i : i + BATCH_SIZE]
-            results = analyze([text for _, text in batch])
+            previous = [targets[k - 1][1] if k > 0 else None for k in range(i, i + len(batch))]
+            results = analyze_with_context([text for _, text in batch], previous)
             for (index, _), scores in zip(batch, results):
                 scores_by_index[index] = scores
 

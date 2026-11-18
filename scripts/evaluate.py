@@ -53,14 +53,15 @@ def build_utterances(path: Path):
 
 
 def collect(answers: dict) -> dict:
-    from app.services.analyzer import analyze, load_model   # 모델은 필요할 때만 불러온다
+    from app.services.analyzer import analyze_with_context, load_model   # 모델은 필요할 때만 불러온다
 
     print("모델을 불러오는 중...")
     load_model()
     cache = {"files": {}}
     for f in answers["files"]:
         rows, targets = build_utterances(SAMPLES / f["file"])
-        scores = analyze([t for _, t in targets]) if targets else []
+        texts = [t for _, t in targets]
+        scores = analyze_with_context(texts, [None] + texts[:-1]) if texts else []
         by_index = {i: s for (i, _), s in zip(targets, scores)}
         cache["files"][f["file"]] = [
             {"index": r["index"], "speaker": r["speaker"], "scores": by_index.get(r["index"])}

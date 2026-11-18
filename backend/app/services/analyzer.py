@@ -12,6 +12,10 @@ from app.services.emotion_model import EmotionClassifier
 
 EMOTIONS = ["불안", "분노", "상처", "슬픔", "당황", "기쁨"]
 
+# 이전 내담자 발화와 묶어서 넣은 점수의 비중. 나머지(0.7)는 현재 발화만 넣은 점수.
+# 샘플 10편으로 0.5 / 0.6 / 0.7을 비교해 정함 (0.5는 전환이 늦게 잡히고 기존보다 나빠짐)
+CONTEXT_WEIGHT = 0.3
+
 _classifier: EmotionClassifier | None = None
 
 
@@ -29,4 +33,20 @@ def analyze(texts: list[str]) -> list[dict[str, float]]:
     return [
         {emotion: round(r["major_scores"][emotion], 4) for emotion in EMOTIONS}
         for r in results
+    ]
+
+
+def analyze_with_context(texts: list[str], previous: list[str | None]) -> list[dict[str, float]]:
+    """현재 발화만 넣은 점수와, 이전 내담자 발화를 앞에 붙여 넣은 점수를 섞는다.
+
+    previous[i]는 texts[i] 바로 앞의 내담자 발화(첫 발화는 None).
+    다음 발화는 쓰지 않는다. 감정은 시간 순서대로 생기기 때문이다.
+    """
+    single = analyze(texts)
+    joined = [f"{p} {t}" if p else t for p, t in zip(previous, texts)]
+    context = analyze(joined)
+    w = CONTEXT_WEIGHT
+    return [
+        {e: round((1 - w) * s[e] + w * c[e], 4) for e in EMOTIONS}
+        for s, c in zip(single, context)
     ]
